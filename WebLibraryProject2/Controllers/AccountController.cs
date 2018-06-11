@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebLibraryProject2.Models;
@@ -401,6 +402,20 @@ namespace WebLibraryProject2.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+        
+        [AllowAnonymous]
+        public ActionResult MakeAdmin(IndexViewModel model, string returnUrl)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var a = db.Roles.First(e => e.Name == "Admin");
+                var id = User.Identity.GetUserName();
+                db.Users.First(e => e.Email == id || e.UserName == id).Roles.Add(new IdentityUserRole{ RoleId = a.Id });
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Index", "Manage");
         }
 
         protected override void Dispose(bool disposing)

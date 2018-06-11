@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Generator">
+      <HintPath>..\..\Generator\Generator\bin\Debug\netcoreapp1.1\Generator.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -53,6 +56,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -190,14 +195,30 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\DB\AuthorsController.cs" />
+    <Compile Include="Controllers\DB\BookLocationsController.cs" />
+    <Compile Include="Controllers\DB\CoursesController.cs" />
+    <Compile Include="Controllers\DB\DisciplinesController.cs" />
+    <Compile Include="Controllers\DB\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\DB\PublicationsController.cs" />
+    <Compile Include="Controllers\DB\ReadersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DB\Author.cs" />
+    <Compile Include="Models\DB\BookLocation.cs" />
+    <Compile Include="Models\DB\Course.cs" />
+    <Compile Include="Models\DB\Discipline.cs" />
+    <Compile Include="Models\DB\Enumerators.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\DB\LibraryDatabase.cs" />
+    <Compile Include="Models\NewPerson.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\DB\Publication.cs" />
+    <Compile Include="Models\DB\Reader.cs" />
+    <Compile Include="Models\DB\Stats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -224,14 +245,18 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -258,6 +283,36 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\CRUD\Publications\Create.cshtml" />
+    <Content Include="Views\CRUD\Publications\Delete.cshtml" />
+    <Content Include="Views\CRUD\Publications\Details.cshtml" />
+    <Content Include="Views\CRUD\Publications\Edit.cshtml" />
+    <Content Include="Views\CRUD\Publications\Index.cshtml" />
+    <Content Include="Views\CRUD\Authors\Create.cshtml" />
+    <Content Include="Views\CRUD\Authors\Delete.cshtml" />
+    <Content Include="Views\CRUD\Authors\Details.cshtml" />
+    <Content Include="Views\CRUD\Authors\Edit.cshtml" />
+    <Content Include="Views\CRUD\Authors\Index.cshtml" />
+    <Content Include="Views\CRUD\BookLocations\Create.cshtml" />
+    <Content Include="Views\CRUD\BookLocations\Delete.cshtml" />
+    <Content Include="Views\CRUD\BookLocations\Details.cshtml" />
+    <Content Include="Views\CRUD\BookLocations\Edit.cshtml" />
+    <Content Include="Views\CRUD\BookLocations\Index.cshtml" />
+    <Content Include="Views\CRUD\Courses\Create.cshtml" />
+    <Content Include="Views\CRUD\Courses\Delete.cshtml" />
+    <Content Include="Views\CRUD\Courses\Details.cshtml" />
+    <Content Include="Views\CRUD\Courses\Edit.cshtml" />
+    <Content Include="Views\CRUD\Courses\Index.cshtml" />
+    <Content Include="Views\CRUD\Readers\Create.cshtml" />
+    <Content Include="Views\CRUD\Readers\Delete.cshtml" />
+    <Content Include="Views\CRUD\Readers\Details.cshtml" />
+    <Content Include="Views\CRUD\Readers\Edit.cshtml" />
+    <Content Include="Views\CRUD\Readers\Index.cshtml" />
+    <Content Include="Views\CRUD\Disciplines\Create.cshtml" />
+    <Content Include="Views\CRUD\Disciplines\Delete.cshtml" />
+    <Content Include="Views\CRUD\Disciplines\Details.cshtml" />
+    <Content Include="Views\CRUD\Disciplines\Edit.cshtml" />
+    <Content Include="Views\CRUD\Disciplines\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -274,6 +329,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
