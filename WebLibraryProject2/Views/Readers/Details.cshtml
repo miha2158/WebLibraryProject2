@@ -1,0 +1,64 @@
+﻿@using WebLibraryProject2.Controllers
+@model WebLibraryProject2.Models.Reader
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Reader</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.First)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.First)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Last)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Last)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Patronimic)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Patronimic)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AccessLevel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccessLevel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Group)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Group)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @if (User.Identity.isAdmin())
+    {
+        <p>
+            @Html.ActionLink("Edit", "Edit", new {id = Model.Id}) |
+        </p>
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -6,6 +6,7 @@ using System.Data.Entity.Spatial;
 
 namespace WebLibraryProject2.Models
 {
+    [Table("Stats")]
     public partial class Stats
     {
         public int Id { get; set; }

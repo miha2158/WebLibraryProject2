@@ -8,7 +8,7 @@ using System.Data.Entity.Spatial;
 
 namespace WebLibraryProject2.Models
 {
-
+    [Table("Reader")]
     public partial class Reader
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -63,11 +63,6 @@ namespace WebLibraryProject2.Models
         {
             var p = NewPerson.FillBlanks(gender);
             var b = new Reader(p.First, p.Last, p.Patronimic, $"{GroupNames[NewValue.Int(GroupNames.Length)] }-{NewValue.Int(15, 18)}-{NewValue.Int(1, 3)}") { AccessLevel = (byte)NewValue.Int(2) };
-
-            using (var db = new LibraryDatabase())
-            {
-                db.Readers.Add(b);
-            }
 
             return b;
         }

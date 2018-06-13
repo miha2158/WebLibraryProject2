@@ -41,7 +41,7 @@ namespace WebLibraryProject2.Models
         public static string ToString(this ICollection<Author> o) => o.Count.ToString();
         public static string ToString(this ICollection<Reader> o) => o.Count.ToString();
         public static string ToString(this ICollection<Publication> o) => o.Count.ToString();
-        public static string ToString(this ICollection<Course> o) => o.Aggregate(string.Empty, (p, d) => p += $"{d.CourseNumber} ");
+        public static string ToString(this ICollection<Courses> o) => o.Aggregate(string.Empty, (p, d) => p += $"{d.Course} ");
         public static string ToString(this ICollection<Stats> o) => o.Count.ToString();
         public static string ToString(this ICollection<Discipline> o) => o.Aggregate(string.Empty, (p, d) => p += $"{d.Name}, ");
         public static string ToString(this ICollection<BookLocation> o) => o.Count(d => !d.IsTaken).ToString();

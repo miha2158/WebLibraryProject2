@@ -12,12 +12,13 @@ namespace WebLibraryProject2.Controllers
 {
     public class DisciplinesController : Controller
     {
-        private LibraryDatabase db = new LibraryDatabase();
-
         // GET: Disciplines
         public ActionResult Index()
         {
-            return View(db.Disciplines.ToList());
+            using (var db = new LibraryDatabase())
+            {
+                return View(db.Disciplines.ToList());
+            }
         }
 
         // GET: Disciplines/Details/5
@@ -27,10 +28,15 @@ namespace WebLibraryProject2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Discipline discipline = db.Disciplines.Find(id);
-            if (discipline == null)
+
+            Discipline discipline;
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                discipline = db.Disciplines.Find(id);
+                if (discipline == null)
+                {
+                    return HttpNotFound();
+                }
             }
             return View(discipline);
         }
@@ -38,21 +44,28 @@ namespace WebLibraryProject2.Controllers
         // GET: Disciplines/Create
         public ActionResult Create()
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             return View();
         }
 
         // POST: Disciplines/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name")] Discipline discipline)
         {
-            if (ModelState.IsValid)
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+            using (var db = new LibraryDatabase())
             {
-                db.Disciplines.Add(discipline);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Disciplines.Add(discipline);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
 
             return View(discipline);
@@ -61,30 +74,42 @@ namespace WebLibraryProject2.Controllers
         // GET: Disciplines/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Discipline discipline = db.Disciplines.Find(id);
-            if (discipline == null)
+
+            Discipline discipline;
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                discipline = db.Disciplines.Find(id);
+                if (discipline == null)
+                {
+                    return HttpNotFound();
+                }
             }
             return View(discipline);
         }
 
         // POST: Disciplines/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name")] Discipline discipline)
         {
-            if (ModelState.IsValid)
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+            using (var db = new LibraryDatabase())
             {
-                db.Entry(discipline).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Entry(discipline).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
             return View(discipline);
         }
@@ -92,14 +117,22 @@ namespace WebLibraryProject2.Controllers
         // GET: Disciplines/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Discipline discipline = db.Disciplines.Find(id);
-            if (discipline == null)
+
+            Discipline discipline;
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                discipline = db.Disciplines.Find(id);
+                if (discipline == null)
+                {
+                    return HttpNotFound();
+                }
             }
             return View(discipline);
         }
@@ -109,19 +142,17 @@ namespace WebLibraryProject2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Discipline discipline = db.Disciplines.Find(id);
-            db.Disciplines.Remove(discipline);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            Discipline discipline;
+            using (var db = new LibraryDatabase())
             {
-                db.Dispose();
+                discipline = db.Disciplines.Find(id);
+                db.Disciplines.Remove(discipline);
+                db.SaveChanges();
             }
-            base.Dispose(disposing);
+            return RedirectToAction("Index");
         }
     }
 }

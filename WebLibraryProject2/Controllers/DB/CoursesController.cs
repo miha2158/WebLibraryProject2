@@ -12,12 +12,13 @@ namespace WebLibraryProject2.Controllers
 {
     public class CoursesController : Controller
     {
-        private LibraryDatabase db = new LibraryDatabase();
-
         // GET: Courses
         public ActionResult Index()
         {
-            return View(db.Courses.ToList());
+            using (var db = new LibraryDatabase())
+            {
+                return View(db.Courses.ToList());
+            }
         }
 
         // GET: Courses/Details/5
@@ -27,10 +28,15 @@ namespace WebLibraryProject2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+
+            Courses course;
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                course = db.Courses.Find(id);
+                if (course == null)
+                {
+                    return HttpNotFound();
+                }
             }
             return View(course);
         }
@@ -38,21 +44,28 @@ namespace WebLibraryProject2.Controllers
         // GET: Courses/Create
         public ActionResult Create()
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             return View();
         }
 
         // POST: Courses/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CourseNumber")] Course course)
+        public ActionResult Create([Bind(Include = "Id,CourseNumber")] Courses course)
         {
-            if (ModelState.IsValid)
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+            using (var db = new LibraryDatabase())
             {
-                db.Courses.Add(course);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Courses.Add(course);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
 
             return View(course);
@@ -61,30 +74,42 @@ namespace WebLibraryProject2.Controllers
         // GET: Courses/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+
+            Courses course;
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                course = db.Courses.Find(id);
+                if (course == null)
+                {
+                    return HttpNotFound();
+                }
             }
             return View(course);
         }
 
         // POST: Courses/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CourseNumber")] Course course)
+        public ActionResult Edit([Bind(Include = "Id,CourseNumber")] Courses course)
         {
-            if (ModelState.IsValid)
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+            using (var db = new LibraryDatabase())
             {
-                db.Entry(course).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Entry(course).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
             return View(course);
         }
@@ -92,14 +117,22 @@ namespace WebLibraryProject2.Controllers
         // GET: Courses/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+
+            Courses course;
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                course = db.Courses.Find(id);
+                if (course == null)
+                {
+                    return HttpNotFound();
+                }
             }
             return View(course);
         }
@@ -109,19 +142,16 @@ namespace WebLibraryProject2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Course course = db.Courses.Find(id);
-            db.Courses.Remove(course);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            using (var db = new LibraryDatabase())
             {
-                db.Dispose();
+                Courses course = db.Courses.Find(id);
+                db.Courses.Remove(course);
+                db.SaveChanges();
             }
-            base.Dispose(disposing);
+            return RedirectToAction("Index");
         }
     }
 }

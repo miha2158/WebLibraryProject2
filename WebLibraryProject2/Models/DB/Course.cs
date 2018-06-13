@@ -7,18 +7,18 @@ using System.Data.Entity.Spatial;
 
 namespace WebLibraryProject2.Models
 {
-    [Table("Courses")]
-    public partial class Course
+    [Table("Course")]
+    public partial class Courses
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Course()
+        public Courses()
         {
             Publications = new HashSet<Publication>();
         }
 
         public int Id { get; set; }
 
-        public byte CourseNumber { get; set; }
+        public byte Course { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Publication> Publications { get; set; }

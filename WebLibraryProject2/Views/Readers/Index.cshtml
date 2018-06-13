@@ -1,0 +1,67 @@
+﻿@using WebLibraryProject2.Controllers
+@model IEnumerable<WebLibraryProject2.Models.Reader>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+
+@if (User.Identity.isAdmin())
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Last)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Patronimic)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AccessLevel)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Group)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.First)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Last)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Patronimic)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AccessLevel)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Group)
+        </td>
+        <td>
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @if (User.Identity.isAdmin())
+            {
+                <p>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                </p>
+            }
+        </td>
+    </tr>
+}
+
+</table>

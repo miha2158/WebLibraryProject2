@@ -6,6 +6,7 @@ using System.Data.Entity.Spatial;
 
 namespace WebLibraryProject2.Models
 {
+    [Table("BookLocation")]
     public partial class BookLocation
     {
         public int Id { get; set; }
@@ -19,6 +20,8 @@ namespace WebLibraryProject2.Models
         public bool IsTaken { get; set; }
 
         public int Publications { get; set; }
+
+        public int? Readers { get; set; }
 
         public virtual Reader Reader { get; set; }
 

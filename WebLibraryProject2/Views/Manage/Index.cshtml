@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity
+@using WebLibraryProject2.Controllers
 @model WebLibraryProject2.Models.IndexViewModel
 @{
     ViewBag.Title = "Manage";
@@ -84,7 +85,7 @@
                     }
                 }*@
         </dd>
-        @if ((Model.TwoFactor && Model.HasPassword) || User.Identity.GetUserName() == "miha.vanya@gmail.com")
+        @if (User.Identity.isAdmin())   
         {
             <dt>
                 <p>

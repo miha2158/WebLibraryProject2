@@ -12,12 +12,11 @@ namespace WebLibraryProject2.Controllers
 {
     public class PublicationsController : Controller
     {
-        private LibraryDatabase db = new LibraryDatabase();
-
         // GET: Publications
         public ActionResult Index()
         {
-            return View(db.Publications.ToList());
+            using (var db = new LibraryDatabase())
+                return View(db.Publications.ToList());
         }
 
         // GET: Publications/Details/5
@@ -27,7 +26,11 @@ namespace WebLibraryProject2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Publication publication = db.Publications.Find(id);
+
+            Publication publication;
+            using (var db = new LibraryDatabase())
+                publication = db.Publications.Find(id);
+
             if (publication == null)
             {
                 return HttpNotFound();
@@ -38,17 +41,22 @@ namespace WebLibraryProject2.Controllers
         // GET: Publications/Create
         public ActionResult Create()
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             return View();
         }
 
         // POST: Publications/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation,BookPublication")] Publication publication)
         {
-            if (ModelState.IsValid)
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+            using (var db = new LibraryDatabase())
+                if (ModelState.IsValid)
             {
                 db.Publications.Add(publication);
                 db.SaveChanges();
@@ -61,11 +69,18 @@ namespace WebLibraryProject2.Controllers
         // GET: Publications/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Publication publication = db.Publications.Find(id);
+
+            Publication publication;
+            using (var db = new LibraryDatabase())
+                publication = db.Publications.Find(id);
+
             if (publication == null)
             {
                 return HttpNotFound();
@@ -74,29 +89,39 @@ namespace WebLibraryProject2.Controllers
         }
 
         // POST: Publications/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation,BookPublication")] Publication publication)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(publication).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+            using (var db = new LibraryDatabase())
+                if (ModelState.IsValid)
+                {
+                    db.Entry(publication).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+
             return View(publication);
         }
 
         // GET: Publications/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Publication publication = db.Publications.Find(id);
+
+            Publication publication;
+            using (var db = new LibraryDatabase())
+                publication = db.Publications.Find(id);
+
             if (publication == null)
             {
                 return HttpNotFound();
@@ -109,19 +134,16 @@ namespace WebLibraryProject2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Publication publication = db.Publications.Find(id);
-            db.Publications.Remove(publication);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            using (var db = new LibraryDatabase())
             {
-                db.Dispose();
+                Publication publication = db.Publications.Find(id);
+                db.Publications.Remove(publication);
+                db.SaveChanges();
             }
-            base.Dispose(disposing);
+            return RedirectToAction("Index");
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Data.Entity.Spatial;
 
 namespace WebLibraryProject2.Models
 {
+    [Table("Discipline")]
     public partial class Discipline
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]

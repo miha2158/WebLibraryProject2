@@ -12,12 +12,11 @@ namespace WebLibraryProject2.Controllers
 {
     public class ReadersController : Controller
     {
-        private LibraryDatabase db = new LibraryDatabase();
-
         // GET: Readers
         public ActionResult Index()
         {
-            return View(db.Readers.ToList());
+            using (var db = new LibraryDatabase())
+                return View(db.Readers.ToList());
         }
 
         // GET: Readers/Details/5
@@ -27,7 +26,11 @@ namespace WebLibraryProject2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reader reader = db.Readers.Find(id);
+
+            Reader reader;
+            using (var db = new LibraryDatabase())
+                reader = db.Readers.Find(id);
+
             if (reader == null)
             {
                 return HttpNotFound();
@@ -38,22 +41,28 @@ namespace WebLibraryProject2.Controllers
         // GET: Readers/Create
         public ActionResult Create()
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             return View();
         }
 
         // POST: Readers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,First,Last,Patronimic,AccessLevel,Group")] Reader reader)
         {
-            if (ModelState.IsValid)
-            {
-                db.Readers.Add(reader);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+
+            using (var db = new LibraryDatabase())
+                if (ModelState.IsValid)
+                {
+                    db.Readers.Add(reader);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
 
             return View(reader);
         }
@@ -61,26 +70,36 @@ namespace WebLibraryProject2.Controllers
         // GET: Readers/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reader reader = db.Readers.Find(id);
+
+            Reader reader;
+            using (var db = new LibraryDatabase())
+                reader = db.Readers.Find(id);
             if (reader == null)
             {
                 return HttpNotFound();
             }
+
             return View(reader);
         }
 
         // POST: Readers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,First,Last,Patronimic,AccessLevel,Group")] Reader reader)
         {
-            if (ModelState.IsValid)
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+
+            using (var db = new LibraryDatabase())
+                if (ModelState.IsValid)
             {
                 db.Entry(reader).State = EntityState.Modified;
                 db.SaveChanges();
@@ -92,11 +111,17 @@ namespace WebLibraryProject2.Controllers
         // GET: Readers/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Reader reader = db.Readers.Find(id);
+
+            Reader reader;
+            using (var db = new LibraryDatabase())
+                reader = db.Readers.Find(id);
             if (reader == null)
             {
                 return HttpNotFound();
@@ -109,19 +134,17 @@ namespace WebLibraryProject2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Reader reader = db.Readers.Find(id);
-            db.Readers.Remove(reader);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+
+            using (var db = new LibraryDatabase())
             {
-                db.Dispose();
+                Reader reader = db.Readers.Find(id);
+                db.Readers.Remove(reader);
+                db.SaveChanges();
             }
-            base.Dispose(disposing);
+            return RedirectToAction("Index");
         }
     }
 }

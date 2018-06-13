@@ -12,12 +12,13 @@ namespace WebLibraryProject2.Controllers
 {
     public class AuthorsController : Controller
     {
-        private LibraryDatabase db = new LibraryDatabase();
-
         // GET: Authors
         public ActionResult Index()
         {
-            return View(db.Authors.ToList());
+            using (var db = new LibraryDatabase())
+            {
+                return View(db.Authors.ToList());
+            }
         }
 
         // GET: Authors/Details/5
@@ -27,31 +28,39 @@ namespace WebLibraryProject2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Author author = db.Authors.Find(id);
-            if (author == null)
+
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                Author author = db.Authors.Find(id);
+                if (author == null)
+                {
+                    return HttpNotFound();
+                }
+
+                return View(author);
             }
-            return View(author);
         }
 
         // GET: Authors/Create
         public ActionResult Create()
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
             return View();
         }
 
         // POST: Authors/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,First,Last,Patronimic,WriterType")] Author author)
         {
             if (ModelState.IsValid)
             {
-                db.Authors.Add(author);
-                db.SaveChanges();
+                using (var db = new LibraryDatabase())
+                {
+                    db.Authors.Add(author);
+                    db.SaveChanges();
+                }
                 return RedirectToAction("Index");
             }
 
@@ -61,29 +70,41 @@ namespace WebLibraryProject2.Controllers
         // GET: Authors/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Author author = db.Authors.Find(id);
-            if (author == null)
+
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                Author author = db.Authors.Find(id);
+                if (author == null)
+                {
+                    return HttpNotFound();
+                }
+
+                return View(author);
             }
-            return View(author);
         }
 
         // POST: Authors/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,First,Last,Patronimic,WriterType")] Author author)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (ModelState.IsValid)
             {
-                db.Entry(author).State = EntityState.Modified;
-                db.SaveChanges();
+                using (var db = new LibraryDatabase())
+                {
+                    db.Entry(author).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
                 return RedirectToAction("Index");
             }
             return View(author);
@@ -92,16 +113,24 @@ namespace WebLibraryProject2.Controllers
         // GET: Authors/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Author author = db.Authors.Find(id);
-            if (author == null)
+
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                Author author = db.Authors.Find(id);
+                if (author == null)
+                {
+                    return HttpNotFound();
+                }
+
+                return View(author);
             }
-            return View(author);
         }
 
         // POST: Authors/Delete/5
@@ -109,19 +138,15 @@ namespace WebLibraryProject2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Author author = db.Authors.Find(id);
-            db.Authors.Remove(author);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+            using (var db = new LibraryDatabase())
             {
-                db.Dispose();
+                Author author = db.Authors.Find(id);
+                db.Authors.Remove(author);
+                db.SaveChanges();
             }
-            base.Dispose(disposing);
+            return RedirectToAction("Index");
         }
     }
 }

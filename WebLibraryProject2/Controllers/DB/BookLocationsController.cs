@@ -12,13 +12,14 @@ namespace WebLibraryProject2.Controllers
 {
     public class BookLocationsController : Controller
     {
-        private LibraryDatabase db = new LibraryDatabase();
-
         // GET: BookLocations
         public ActionResult Index()
         {
-            var bookLocations = db.BookLocations.Include(b => b.Publication);
-            return View(bookLocations.ToList());
+            using (var db = new LibraryDatabase())
+            {
+                var bookLocations = db.BookLocations.Include(b => b.Publication).Include(b => b.Reader);
+                return View(bookLocations.ToList());
+            }
         }
 
         // GET: BookLocations/Details/5
@@ -28,10 +29,15 @@ namespace WebLibraryProject2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BookLocation bookLocation = db.BookLocations.Find(id);
-            if (bookLocation == null)
+
+            BookLocation bookLocation;
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                bookLocation = db.BookLocations.Find(id);
+                if (bookLocation == null)
+                {
+                    return HttpNotFound();
+                }
             }
             return View(bookLocation);
         }
@@ -39,69 +45,105 @@ namespace WebLibraryProject2.Controllers
         // GET: BookLocations/Create
         public ActionResult Create()
         {
-            ViewBag.Publications = new SelectList(db.Publications, "Id", "Name");
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+            using (var db = new LibraryDatabase())
+            {
+                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name");
+                ViewBag.Readers = new SelectList(db.Readers, "Id", "First");
+            }
             return View();
         }
 
         // POST: BookLocations/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Room,Place,IsTaken,Publications")] BookLocation bookLocation)
+        public ActionResult Create([Bind(Include = "Id,Room,Place,IsTaken,Publications,Readers")] BookLocation bookLocation)
         {
-            if (ModelState.IsValid)
-            {
-                db.BookLocations.Add(bookLocation);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
 
-            ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", bookLocation.Publications);
+            using (var db = new LibraryDatabase())
+            {
+
+                if (ModelState.IsValid)
+                {
+                    db.BookLocations.Add(bookLocation);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+
+                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", bookLocation.Publications);
+                ViewBag.Readers = new SelectList(db.Readers, "Id", "First", bookLocation.Readers);
+            }
             return View(bookLocation);
         }
 
         // GET: BookLocations/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BookLocation bookLocation = db.BookLocations.Find(id);
-            if (bookLocation == null)
+
+            BookLocation bookLocation;
+            using (var db = new LibraryDatabase())
             {
-                return HttpNotFound();
+                bookLocation = db.BookLocations.Find(id);
+                if (bookLocation == null)
+                {
+                    return HttpNotFound();
+                }
+                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", bookLocation.Publications);
+                ViewBag.Readers = new SelectList(db.Readers, "Id", "First", bookLocation.Readers);
             }
-            ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", bookLocation.Publications);
             return View(bookLocation);
         }
 
         // POST: BookLocations/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Room,Place,IsTaken,Publications")] BookLocation bookLocation)
+        public ActionResult Edit([Bind(Include = "Id,Room,Place,IsTaken,Publications,Readers")] BookLocation bookLocation)
         {
-            if (ModelState.IsValid)
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
+            using (var db = new LibraryDatabase())
             {
-                db.Entry(bookLocation).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Entry(bookLocation).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", bookLocation.Publications);
+                ViewBag.Readers = new SelectList(db.Readers, "Id", "First", bookLocation.Readers);
             }
-            ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", bookLocation.Publications);
             return View(bookLocation);
         }
 
         // GET: BookLocations/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BookLocation bookLocation = db.BookLocations.Find(id);
+
+            BookLocation bookLocation;
+            using (var db = new LibraryDatabase())
+            {
+                bookLocation = db.BookLocations.Find(id);
+            }
+
             if (bookLocation == null)
             {
                 return HttpNotFound();
@@ -114,19 +156,16 @@ namespace WebLibraryProject2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            BookLocation bookLocation = db.BookLocations.Find(id);
-            db.BookLocations.Remove(bookLocation);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+            if (!User.Identity.isAdmin())
+                return HttpNotFound();
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            using (var db = new LibraryDatabase())
             {
-                db.Dispose();
+                BookLocation bookLocation = db.BookLocations.Find(id);
+                db.BookLocations.Remove(bookLocation);
+                db.SaveChanges();
             }
-            base.Dispose(disposing);
+            return RedirectToAction("Index");
         }
     }
 }

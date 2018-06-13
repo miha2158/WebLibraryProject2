@@ -8,7 +8,7 @@ using System.Data.Entity.Spatial;
 
 namespace WebLibraryProject2.Models
 {
-
+    [Table("Author")]
     public partial class Author
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -51,9 +51,6 @@ namespace WebLibraryProject2.Models
         {
             var p = NewPerson.FillBlanks(gender);
             var b = new Author(p.First, p.Last, p.Patronimic, (eWriterType)NewValue.Int(2));
-
-            using (var db = new LibraryDatabase())
-                db.Authors.Add(b);
 
             return b;
         }
