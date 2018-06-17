@@ -17,14 +17,6 @@ namespace WebLibraryProject2.Controllers
 {
     public static class Ext
     {
-        public static bool isAdmin(this IIdentity userIdentity)
-        {
-            bool auth = userIdentity.IsAuthenticated;
-            bool admin = false;
-            string userName = userIdentity.GetUserName();
-            using (var db = new ApplicationDbContext())
-                admin = db.Users.First(e => e.UserName == userName).Roles.Any(e => e.RoleId == db.Roles.First(d => d.Name == "admin" || d.Name == "Admin").Id);
-            return admin && auth;
-        }
+        
     }
 }

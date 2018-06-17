@@ -12,16 +12,17 @@ namespace WebLibraryProject2.Controllers
 {
     public class DisciplinesController : Controller
     {
+        public LibraryDatabase db;
+
         // GET: Disciplines
         public ActionResult Index()
         {
-            using (var db = new LibraryDatabase())
             {
                 return View(db.Disciplines.ToList());
             }
         }
 
-        // GET: Disciplines/Details/5
+        // GET: Disciplines/Details
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -30,7 +31,6 @@ namespace WebLibraryProject2.Controllers
             }
 
             Discipline discipline;
-            using (var db = new LibraryDatabase())
             {
                 discipline = db.Disciplines.Find(id);
                 if (discipline == null)
@@ -44,7 +44,7 @@ namespace WebLibraryProject2.Controllers
         // GET: Disciplines/Create
         public ActionResult Create()
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             return View();
@@ -55,10 +55,9 @@ namespace WebLibraryProject2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name")] Discipline discipline)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
-            using (var db = new LibraryDatabase())
             {
                 if (ModelState.IsValid)
                 {
@@ -67,23 +66,20 @@ namespace WebLibraryProject2.Controllers
                     return RedirectToAction("Index");
                 }
             }
-
             return View(discipline);
         }
 
-        // GET: Disciplines/Edit/5
+        // GET: Disciplines/Edit
         public ActionResult Edit(int? id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
             Discipline discipline;
-            using (var db = new LibraryDatabase())
             {
                 discipline = db.Disciplines.Find(id);
                 if (discipline == null)
@@ -94,15 +90,14 @@ namespace WebLibraryProject2.Controllers
             return View(discipline);
         }
 
-        // POST: Disciplines/Edit/5
+        // POST: Disciplines/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name")] Discipline discipline)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
-            using (var db = new LibraryDatabase())
             {
                 if (ModelState.IsValid)
                 {
@@ -114,10 +109,10 @@ namespace WebLibraryProject2.Controllers
             return View(discipline);
         }
 
-        // GET: Disciplines/Delete/5
+        // GET: Disciplines/Delete
         public ActionResult Delete(int? id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             if (id == null)
@@ -126,7 +121,6 @@ namespace WebLibraryProject2.Controllers
             }
 
             Discipline discipline;
-            using (var db = new LibraryDatabase())
             {
                 discipline = db.Disciplines.Find(id);
                 if (discipline == null)
@@ -137,22 +131,27 @@ namespace WebLibraryProject2.Controllers
             return View(discipline);
         }
 
-        // POST: Disciplines/Delete/5
+        // POST: Disciplines/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             Discipline discipline;
-            using (var db = new LibraryDatabase())
             {
                 discipline = db.Disciplines.Find(id);
                 db.Disciplines.Remove(discipline);
                 db.SaveChanges();
             }
             return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            db?.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

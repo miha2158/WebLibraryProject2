@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebLibraryProject2.Models;
@@ -333,7 +334,33 @@ namespace WebLibraryProject2.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+        public ActionResult MakeAdmin()
+        {
+            if (!User.IsInRole("Admin"))
+                return HttpNotFound();
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MakeAdmin(AdminifyViewModel model)
+        {
+            if (!User.IsInRole("Admin"))
+                return HttpNotFound();
+
+            using (var db = new ApplicationDbContext())
+            {
+                var a = db.Roles.First(e => e.Name == "Admin").Id;
+                var id = model.userName;
+                db.Users.First(e => e.Email == id || e.UserName == id).Roles.Add(new IdentityUserRole { RoleId = a });
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Index", "Manage");
+        }
+
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 

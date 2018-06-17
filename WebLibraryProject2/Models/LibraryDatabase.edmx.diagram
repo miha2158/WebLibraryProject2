@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d7bcce9a519845469d368ada4e202442" Name="Diagram1">
+        <EntityTypeShape EntityType="WebLibraryProject2.Models.Author" Width="1.5" PointX="0.5" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebLibraryProject2.Models.BookLocation" Width="1.5" PointX="4.25" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebLibraryProject2.Models.Courses" Width="1.5" PointX="0.5" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebLibraryProject2.Models.Discipline" Width="1.5" PointX="0.5" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebLibraryProject2.Models.Publication" Width="1.5" PointX="2.375" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebLibraryProject2.Models.Reader" Width="1.5" PointX="4.25" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebLibraryProject2.Models.Stats" Width="1.5" PointX="2.25" PointY="4.375" IsExpanded="true" />
+        <AssociationConnector Association="WebLibraryProject2.Models.FK_BookLocationReader" ManuallyRouted="false" />
+        <AssociationConnector Association="WebLibraryProject2.Models.FK_PublicationBookLocation" ManuallyRouted="false" />
+        <AssociationConnector Association="WebLibraryProject2.Models.FK_PublicationStats" ManuallyRouted="false" />
+        <AssociationConnector Association="WebLibraryProject2.Models.DisciplinePublication" ManuallyRouted="false" />
+        <AssociationConnector Association="WebLibraryProject2.Models.PublicationAuthor" ManuallyRouted="false" />
+        <AssociationConnector Association="WebLibraryProject2.Models.PublicationCourse" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

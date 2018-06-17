@@ -1,0 +1,21 @@
+﻿@model WebLibraryProject2.Models.AdminifyViewModel
+
+@{
+    ViewBag.Title = "Adminify";
+
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("MakeAdmin", "Manage", FormMethod.Post))
+{
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.TextBoxFor(m => m.userName, new {@class = "form-control", name="userName"})
+        </dt>
+        <dd>
+            <input type="submit" class="btn btn-default" value="Adminify!"/>
+        </dd>
+    </dl>
+}

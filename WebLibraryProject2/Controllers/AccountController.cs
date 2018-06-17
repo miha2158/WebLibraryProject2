@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -404,309 +405,325 @@ namespace WebLibraryProject2.Controllers
         {
             return View();
         }
-        
-        [AllowAnonymous]
-        public ActionResult MakeAdmin(IndexViewModel model, string returnUrl)
-        {
-            using (var db = new ApplicationDbContext())
-            {
-                var a = db.Roles.First(e => e.Name == "Admin");
-                var id = User.Identity.GetUserName();
-                db.Users.First(e => e.Email == id || e.UserName == id).Roles.Add(new IdentityUserRole{ RoleId = a.Id });
-                db.SaveChanges();
-            }
-
-            return RedirectToAction("Index", "Manage");
-        }
 
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Login");
         }
 
         public ActionResult TestFill()
         {
-            if(User.Identity.isAdmin())
+            if(User.IsInRole("Admin"))
                 using (var db = new LibraryDatabase())
                 {
-
-                    for (int i = 0; i < 6; i++)
-                        db.Authors.Add(Author.FillBlanks());
-                    ;
-
-                    for (int i = 0; i < 10; i++)
-                        db.Readers.Add(Reader.FillBlanks());
-                    ;
-
-                    var courses = new[]
+                    if(!db.Authors.Any())
                     {
-                        new Courses {Id = 1, Course = 1},
-                        new Courses {Id = 2, Course = 2},
-                        new Courses {Id = 3, Course = 3},
-                        new Courses {Id = 4, Course = 4},
-                    };
-                    foreach (var t in courses)
-                        db.Courses.Add(t);
-                    ;
-
-                    var disciplines = new[]
-                    {
-                        new Discipline
-                        {
-                            Id = 1,
-                            Name = "Программирование",
-                        },
-                        new Discipline
-                        {
-                            Id = 2,
-                            Name = "Конструирование ПО",
-                        },
-                        new Discipline
-                        {
-                            Id = 3,
-                            Name = "НИС",
-                        }
-                    };
-                    foreach (var t in disciplines)
-                        db.Disciplines.Add(t);
-                    ;
-
-                    var publications = new[]
-                    {
-                        new Publication("Принципы программирования",
-                                        db.Authors.Local[2],
-                                        ePublicationType.None,
-                                        eBookPublication.Book,
-                                        new DateTime(1985, 4, 1),
-                                        "Росмэн")
-                        {
-                            Id = 1,
-                            Courses = new[]
-                            {
-                                courses[0],
-                                courses[1]
-                            },
-                            Disciplines = new[]
-                            {
-                                disciplines[0]
-                            }
-                        },
-                        new Publication("Справочник по C#",
-                                        new[]
-                                        {
-                                            db.Authors.Local[1],
-                                            db.Authors.Local[2]
-                                        },
-                                        ePublicationType.None,
-                                        eBookPublication.Book,
-                                        new DateTime(2011, 6, 1),
-                                        "Справочники")
-                        {
-                            Id = 3,
-                            Courses = new[]
-                            {
-                                courses[0],
-                            },
-                            Disciplines = new[]
-                            {
-                                disciplines[0],
-                            }
-                        },
-                        new Publication("Pascal.NET programming guide",
-                                        new[]
-                                        {
-                                            db.Authors.Local[2],
-                                            db.Authors.Local[3]
-                                        },
-                                        ePublicationType.Educational,
-                                        eBookPublication.Publication,
-                                        new DateTime(2001, 8, 1),
-                                        "Питер")
-                        {
-                            Id = 2,
-                            Courses = new[]
-                            {
-                                courses[1],
-                                courses[3]
-                            },
-                            Disciplines = new[]
-                            {
-                                disciplines[0],
-                                disciplines[1]
-                            }
-                        },
-                        new Publication("Как писать божественный код",
-                                        db.Authors.Local[5],
-                                        ePublicationType.Scientific,
-                                        eBookPublication.Publication,
-                                        new DateTime(2018, 3, 1),
-                                        null)
-                        {
-                            Id = 6,
-                            InternetLocation = "https://youtube.com/",
-                            Courses = new[]
-                            {
-                                courses[2],
-                                courses[3]
-                            },
-                            Disciplines = new[]
-                            {
-                                disciplines[0],
-                            }
-                        },
-                        new Publication("Почему Perl 6 - лучший язык программирования",
-                                        new[]
-                                        {
-                                            db.Authors.Local[3],
-                                            db.Authors.Local[4],
-                                        },
-                                        ePublicationType.Educational,
-                                        eBookPublication.Publication,
-                                        new DateTime(2015, 1, 1), null)
-                        {
-                            Id = 4,
-                            InternetLocation = "https://google.com/",
-                            Courses = new[]
-                            {
-                                courses[1],
-                                courses[2]
-                            },
-                            Disciplines = new[]
-                            {
-                                disciplines[1],
-                            }
-                        },
-                        new Publication("Где учиться на программиста",
-                                        db.Authors.Local[5],
-                                        ePublicationType.Educational,
-                                        eBookPublication.Publication,
-                                        new DateTime(2016, 11, 1),
-                                        null)
-                        {
-                            Id = 5,
-                            InternetLocation = "https://wikipedia.org/",
-                            Courses = new[]
-                            {
-                                courses[1],
-                                courses[3],
-                            },
-                            Disciplines = new[]
-                            {
-                                disciplines[2],
-                            }
-                        },
-                    };
-                    foreach (var t in publications)
-                        db.Publications.Add(t);
-                    ;
-
-                    var stats = new[]
-                    {
-                        new Stats
-                        {
-                            Id = 1,
-                            DateTaken = new DateTime(2016, 01, 09),
-                            Publication = db.Publications.Local[2]
-                        },
-                        new Stats
-                        {
-                            Id = 2,
-                            DateTaken = new DateTime(2017, 06, 10),
-                            Publication = db.Publications.Local[2]
-                        },
-                        new Stats
-                        {
-                            Id = 3,
-                            DateTaken = new DateTime(2017, 11, 15),
-                            Publication = db.Publications.Local[1]
-                        },
-                        new Stats
-                        {
-                            Id = 4,
-                            DateTaken = new DateTime(2018, 08, 20),
-                            Publication = db.Publications.Local[1]
-                        },
-                        new Stats
-                        {
-                            Id = 5,
-                            DateTaken = new DateTime(2018, 03, 01),
-                            Publication = db.Publications.Local[2]
-                        },
-                    };
-                    foreach (var t in stats)
-                        db.Stats.Add(t);
-                    ;
-
-                    var locations = new[]
-                    {
-                        new BookLocation
-                        {
-                            Id = 1,
-                            Room = 307,
-                            Place = "здесь",
-                            IsTaken = true,
-                            Reader = db.Readers.Local[2],
-                            Publication = db.Publications.Local[2]
-                        },
-                        new BookLocation
-                        {
-                            Id = 2,
-                            Room = 321,
-                            Place = "где-то была",
-                            IsTaken = false,
-                            Publication = db.Publications.Local[2]
-                        },
-                        new BookLocation
-                        {
-                            Id = 3,
-                            Room = 501,
-                            Place = "в столе",
-                            IsTaken = true,
-                            Reader = db.Readers.Local[1],
-                            Publication = db.Publications.Local[1]
-                        },
-
-                        new BookLocation
-                        {
-                            Id = 4,
-                            Room = 321,
-                            Place = "на верхней полке шкафа",
-                            IsTaken = false,
-                            Publication = db.Publications.Local[2]
-                        },
-                        new BookLocation
-                        {
-                            Id = 5,
-                            Room = 318,
-                            Place = "в правом шкафу слева",
-                            IsTaken = false,
-                            Publication = db.Publications.Local[0]
-                        },
-                        new BookLocation
-                        {
-                            Id = 6,
-                            Room = 302,
-                            Place = "на столе",
-                            IsTaken = false,
-                            Publication = db.Publications.Local[1]
-                        },
-                        new BookLocation
-                        {
-                            Id = 7,
-                            Room = 323,
-                            Place = "под потолком",
-                            IsTaken = false,
-                            Publication = db.Publications.Local[0]
-                        },
-                    };
-                    foreach (var t in locations)
-                    {
-                        db.BookLocations.Add(t);
+                        for (int i = 0; i < 6; i++)
+                            db.Authors.Add(Author.FillBlanks());
+                        db.SaveChanges();
                     }
-                    db.SaveChanges();
+                    var authors = db.Authors.ToArray();
+
+                    if(!db.Readers.Any())
+                    {
+                        for (int i = 0; i < 10; i++)
+                            db.Readers.Add(Reader.FillBlanks());
+                        db.SaveChanges();
+                    }
+                    var readers = db.Readers.ToArray();
+
+                    Courses[] courses;
+                    if (!db.Courses.Any())
+                    {
+                        courses = new[]
+                        {
+                            new Courses {Id = 1, Course = 1},
+                            new Courses {Id = 2, Course = 2},
+                            new Courses {Id = 3, Course = 3},
+                            new Courses {Id = 4, Course = 4},
+                        };
+                        foreach (var t in courses)
+                            db.Courses.Add(t);
+                        db.SaveChanges();
+                    }
+                    courses = db.Courses.ToArray();
+
+                    Discipline[] disciplines;
+                    if (!db.Disciplines.Any())
+                    {
+                        disciplines = new[]
+                        {
+                            new Discipline
+                            {
+                                Id = 1,
+                                Name = "Программирование",
+                            },
+                            new Discipline
+                            {
+                                Id = 2,
+                                Name = "Конструирование ПО",
+                            },
+                            new Discipline
+                            {
+                                Id = 3,
+                                Name = "НИС",
+                            }
+                        };
+                        foreach (var t in disciplines)
+                            db.Disciplines.Add(t);
+                        db.SaveChanges();
+                    }
+                    disciplines = db.Disciplines.ToArray();
+
+                    Publication[] publications;
+                    if(!db.Publications.Any())
+                    {
+                        publications = new[]
+                        {
+                            new Publication("Принципы программирования",
+                                            authors[2],
+                                            ePublicationType.None,
+                                            eBookPublication.Book,
+                                            new DateTime(1985, 4, 1),
+                                            "Росмэн")
+                            {
+                                Id = 1,
+                                Courses = new[]
+                                {
+                                    courses[0],
+                                    courses[1]
+                                },
+                                Disciplines = new[]
+                                {
+                                    disciplines[0]
+                                }
+                            },
+                            new Publication("Справочник по C#",
+                                            new[]
+                                            {
+                                                authors[1],
+                                                authors[2]
+                                            },
+                                            ePublicationType.None,
+                                            eBookPublication.Book,
+                                            new DateTime(2011, 6, 1),
+                                            "Справочники")
+                            {
+                                Id = 3,
+                                Courses = new[]
+                                {
+                                    courses[0],
+                                },
+                                Disciplines = new[]
+                                {
+                                    disciplines[0],
+                                }
+                            },
+                            new Publication("Pascal.NET programming guide",
+                                            new[]
+                                            {
+                                                authors[2],
+                                                authors[3]
+                                            },
+                                            ePublicationType.Educational,
+                                            eBookPublication.Publication,
+                                            new DateTime(2001, 8, 1),
+                                            "Питер")
+                            {
+                                Id = 2,
+                                Courses = new[]
+                                {
+                                    courses[1],
+                                    courses[3]
+                                },
+                                Disciplines = new[]
+                                {
+                                    disciplines[0],
+                                    disciplines[1]
+                                }
+                            },
+                            new Publication("Как писать божественный код",
+                                            authors[5],
+                                            ePublicationType.Scientific,
+                                            eBookPublication.Publication,
+                                            new DateTime(2018, 3, 1),
+                                            null)
+                            {
+                                Id = 6,
+                                InternetLocation = "https://youtube.com/",
+                                Courses = new[]
+                                {
+                                    courses[2],
+                                    courses[3]
+                                },
+                                Disciplines = new[]
+                                {
+                                    disciplines[0],
+                                }
+                            },
+                            new Publication("Почему Perl 6 - лучший язык программирования",
+                                            new[]
+                                            {
+                                                authors[3],
+                                                authors[4],
+                                            },
+                                            ePublicationType.Educational,
+                                            eBookPublication.Publication,
+                                            new DateTime(2015, 1, 1), null)
+                            {
+                                Id = 4,
+                                InternetLocation = "https://google.com/",
+                                Courses = new[]
+                                {
+                                    courses[1],
+                                    courses[2]
+                                },
+                                Disciplines = new[]
+                                {
+                                    disciplines[1],
+                                }
+                            },
+                            new Publication("Где учиться на программиста",
+                                            authors[5],
+                                            ePublicationType.Educational,
+                                            eBookPublication.Publication,
+                                            new DateTime(2016, 11, 1),
+                                            null)
+                            {
+                                Id = 5,
+                                InternetLocation = "https://wikipedia.org/",
+                                Courses = new[]
+                                {
+                                    courses[1],
+                                    courses[3],
+                                },
+                                Disciplines = new[]
+                                {
+                                    disciplines[2],
+                                }
+                            },
+                        };
+                        foreach (var t in publications)
+                            db.Publications.Add(t);
+                        db.SaveChanges();
+                    }
+                    publications = db.Publications.ToArray();
+
+                    Stats[] stats;
+                    if(!db.Stats.Any())
+                    {
+                        stats = new[]
+                        {
+                            new Stats
+                            {
+                                Id = 1,
+                                DateTaken = new DateTime(2016, 01, 09),
+                                Publication = publications[2]
+                            },
+                            new Stats
+                            {
+                                Id = 2,
+                                DateTaken = new DateTime(2017, 06, 10),
+                                Publication = publications[2]
+                            },
+                            new Stats
+                            {
+                                Id = 3,
+                                DateTaken = new DateTime(2017, 11, 15),
+                                Publication = publications[1]
+                            },
+                            new Stats
+                            {
+                                Id = 4,
+                                DateTaken = new DateTime(2018, 08, 20),
+                                Publication = publications[1]
+                            },
+                            new Stats
+                            {
+                                Id = 5,
+                                DateTaken = new DateTime(2018, 03, 01),
+                                Publication = publications[2]
+                            },
+                        };
+                        foreach (var t in stats)
+                            db.Stats.Add(t);
+                        db.SaveChanges();
+                    }
+
+                    BookLocation[] locations;
+                    if(!db.BookLocations.Any())
+                    {
+                        locations = new[]
+                        {
+                            new BookLocation
+                            {
+                                Id = 1,
+                                Room = 307,
+                                Place = "здесь",
+                                IsTaken = true,
+                                Reader = readers[2],
+                                Publication = publications[2]
+                            },
+                            new BookLocation
+                            {
+                                Id = 2,
+                                Room = 321,
+                                Place = "где-то была",
+                                IsTaken = false,
+                                Publication = publications[2]
+                            },
+                            new BookLocation
+                            {
+                                Id = 3,
+                                Room = 501,
+                                Place = "в столе",
+                                IsTaken = true,
+                                Reader = readers[1],
+                                Publication = publications[1]
+                            },
+
+                            new BookLocation
+                            {
+                                Id = 4,
+                                Room = 321,
+                                Place = "на верхней полке шкафа",
+                                IsTaken = false,
+                                Publication = publications[2]
+                            },
+                            new BookLocation
+                            {
+                                Id = 5,
+                                Room = 318,
+                                Place = "в правом шкафу слева",
+                                IsTaken = false,
+                                Publication = publications[0]
+                            },
+                            new BookLocation
+                            {
+                                Id = 6,
+                                Room = 302,
+                                Place = "на столе",
+                                IsTaken = false,
+                                Publication = publications[1]
+                            },
+                            new BookLocation
+                            {
+                                Id = 7,
+                                Room = 323,
+                                Place = "под потолком",
+                                IsTaken = false,
+                                Publication = publications[0]
+                            },
+                        };
+                        foreach (var t in locations)
+                        {
+                            db.BookLocations.Add(t);
+                        }
+                        db.SaveChanges();
+                    }
                 }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
 
         protected override void Dispose(bool disposing)

@@ -18,6 +18,14 @@
         <dd>
             @Html.DisplayFor(model => model.First)
         </dd>
+        
+        <dt>
+            <a href="@Url.Action("Publications", new { AuthorsId = Model.Id })"></a>
+        </dt>
+        
+        <dt>
+
+        </dt>
 
         <dt>
             @Html.DisplayNameFor(model => model.Last)
@@ -40,17 +48,20 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.WriterType)
+            @Html.DisplayFor(model => model.toEnumWT)
         </dd>
 
     </dl>
 </div>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Edit", "Edit", new
+        {
+            id = Model.Id
+        }) |
+    </p>
+}
 <p>
-    @if (User.Identity.isAdmin())
-    {
-        <p>
-            @Html.ActionLink("Edit", "Edit", new {id = Model.Id}) |
-        </p>
-    }
     @Html.ActionLink("Back to List", "Index")
 </p>

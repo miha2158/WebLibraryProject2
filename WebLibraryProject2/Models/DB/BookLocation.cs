@@ -6,28 +6,8 @@ using System.Data.Entity.Spatial;
 
 namespace WebLibraryProject2.Models
 {
-    [Table("BookLocation")]
     public partial class BookLocation
     {
-        public int Id { get; set; }
-
-        public int Room { get; set; }
-
-        [Required]
-        [StringLength(70)]
-        public string Place { get; set; }
-
-        public bool IsTaken { get; set; }
-
-        public int Publications { get; set; }
-
-        public int? Readers { get; set; }
-
-        public virtual Reader Reader { get; set; }
-
-        public virtual Publication Publication { get; set; }
-
-
         public BookLocation()
         {
         }

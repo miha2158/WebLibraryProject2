@@ -8,18 +8,22 @@ using System.Web;
 using System.Web.Mvc;
 using WebLibraryProject2.Models;
 
-namespace WebLibraryProject2.Controllers
+namespace WebLibraryProject2.Controllers.DB
 {
     public class StatsController : Controller
     {
+        public LibraryDatabase db = new LibraryDatabase();
+
         // GET: Stats
         public ActionResult Index()
         {
-            using (var db = new LibraryDatabase())
-                return View(db.Stats.Include(s => s.Publication).ToList());
+            {
+                var stats = db.Stats.Include(s => s.Publication);
+                return View(stats.ToList());
+            }
         }
 
-        // GET: Stats/Details/5
+        // GET: Stats/Details
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -28,22 +32,25 @@ namespace WebLibraryProject2.Controllers
             }
 
             Stats stats;
-            using (var db = new LibraryDatabase())
-                stats = db.Stats.Find(id);
-
-            if (stats == null)
             {
-                return HttpNotFound();
+                stats = db.Stats.Find(id);
+                if (stats == null)
+                {
+                    return HttpNotFound();
+                }
             }
-
             return View(stats);
         }
 
         // GET: Stats/Create
         public ActionResult Create()
         {
-            using (var db = new LibraryDatabase())
+            if (!User.IsInRole("Admin"))
+                return HttpNotFound();
+
+            {
                 ViewBag.Publications = new SelectList(db.Publications, "Id", "Name");
+            }
             return View();
         }
 
@@ -52,10 +59,9 @@ namespace WebLibraryProject2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,DateTaken,Publications")] Stats stats)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
-            using (var db = new LibraryDatabase())
             {
                 if (ModelState.IsValid)
                 {
@@ -64,15 +70,15 @@ namespace WebLibraryProject2.Controllers
                     return RedirectToAction("Index");
                 }
 
-                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", stats.Publications);
+                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", stats.Publication);
             }
             return View(stats);
         }
 
-        // GET: Stats/Edit/5
+        // GET: Stats/Edit
         public ActionResult Edit(int? id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             if (id == null)
@@ -81,28 +87,25 @@ namespace WebLibraryProject2.Controllers
             }
 
             Stats stats;
-            using (var db = new LibraryDatabase())
             {
                 stats = db.Stats.Find(id);
                 if (stats == null)
                 {
                     return HttpNotFound();
                 }
-
-                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", stats.Publications);
+                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", stats.Publication);
             }
             return View(stats);
         }
 
-        // POST: Stats/Edit/5
+        // POST: Stats/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,DateTaken,Publications")] Stats stats)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
-            using (var db = new LibraryDatabase())
             {
                 if (ModelState.IsValid)
                 {
@@ -110,16 +113,15 @@ namespace WebLibraryProject2.Controllers
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-
-                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", stats.Publications);
+                ViewBag.Publications = new SelectList(db.Publications, "Id", "Name", stats.Publication);
             }
             return View(stats);
         }
 
-        // GET: Stats/Delete/5
+        // GET: Stats/Delete
         public ActionResult Delete(int? id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             if (id == null)
@@ -128,33 +130,36 @@ namespace WebLibraryProject2.Controllers
             }
 
             Stats stats;
-            using (var db = new LibraryDatabase())
-                stats = db.Stats.Find(id);
-
-            if (stats == null)
             {
-                return HttpNotFound();
+                stats = db.Stats.Find(id);
+                if (stats == null)
+                {
+                    return HttpNotFound();
+                }
             }
-
             return View(stats);
         }
 
-        // POST: Stats/Delete/5
+        // POST: Stats/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
-            Stats stats;
-            using (var db = new LibraryDatabase())
             {
-                stats = db.Stats.Find(id);
+                Stats stats = db.Stats.Find(id);
                 db.Stats.Remove(stats);
                 db.SaveChanges();
             }
             return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            db?.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

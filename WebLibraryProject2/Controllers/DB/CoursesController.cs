@@ -12,16 +12,19 @@ namespace WebLibraryProject2.Controllers
 {
     public class CoursesController : Controller
     {
+        public LibraryDatabase db = new LibraryDatabase();
+
         // GET: Courses
-        public ActionResult Index()
+        public ActionResult Index(int? PublicationId)
         {
-            using (var db = new LibraryDatabase())
             {
-                return View(db.Courses.ToList());
+                if (PublicationId == null)
+                    return View(db.Courses.ToList());
+                return View(db.Courses.Where(e => e.Publications.Any(d => d.Id == PublicationId)).ToList());
             }
         }
 
-        // GET: Courses/Details/5
+        // GET: Courses/Details
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -30,7 +33,6 @@ namespace WebLibraryProject2.Controllers
             }
 
             Courses course;
-            using (var db = new LibraryDatabase())
             {
                 course = db.Courses.Find(id);
                 if (course == null)
@@ -44,7 +46,7 @@ namespace WebLibraryProject2.Controllers
         // GET: Courses/Create
         public ActionResult Create()
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             return View();
@@ -55,10 +57,9 @@ namespace WebLibraryProject2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,CourseNumber")] Courses course)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
-            using (var db = new LibraryDatabase())
             {
                 if (ModelState.IsValid)
                 {
@@ -67,14 +68,13 @@ namespace WebLibraryProject2.Controllers
                     return RedirectToAction("Index");
                 }
             }
-
             return View(course);
         }
 
-        // GET: Courses/Edit/5
+        // GET: Courses/Edit
         public ActionResult Edit(int? id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             if (id == null)
@@ -83,7 +83,6 @@ namespace WebLibraryProject2.Controllers
             }
 
             Courses course;
-            using (var db = new LibraryDatabase())
             {
                 course = db.Courses.Find(id);
                 if (course == null)
@@ -94,15 +93,15 @@ namespace WebLibraryProject2.Controllers
             return View(course);
         }
 
-        // POST: Courses/Edit/5
+        // POST: Courses/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,CourseNumber")] Courses course)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
-            using (var db = new LibraryDatabase())
+            
             {
                 if (ModelState.IsValid)
                 {
@@ -114,10 +113,10 @@ namespace WebLibraryProject2.Controllers
             return View(course);
         }
 
-        // GET: Courses/Delete/5
+        // GET: Courses/Delete
         public ActionResult Delete(int? id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             if (id == null)
@@ -126,7 +125,6 @@ namespace WebLibraryProject2.Controllers
             }
 
             Courses course;
-            using (var db = new LibraryDatabase())
             {
                 course = db.Courses.Find(id);
                 if (course == null)
@@ -137,21 +135,26 @@ namespace WebLibraryProject2.Controllers
             return View(course);
         }
 
-        // POST: Courses/Delete/5
+        // POST: Courses/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
-            using (var db = new LibraryDatabase())
             {
                 Courses course = db.Courses.Find(id);
                 db.Courses.Remove(course);
                 db.SaveChanges();
             }
             return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            db?.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

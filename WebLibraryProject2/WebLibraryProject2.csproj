@@ -195,47 +195,97 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\DB\BookLocationsController.cs" />
     <Compile Include="Controllers\DB\AuthorsController.cs" />
+    <Compile Include="Controllers\DB\BookLocationsController.cs" />
     <Compile Include="Controllers\DB\CoursesController.cs" />
     <Compile Include="Controllers\DB\DisciplinesController.cs" />
+    <Compile Include="Controllers\DB\StatsController.cs" />
     <Compile Include="Controllers\Ext.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\DB\PublicationsController.cs" />
     <Compile Include="Controllers\DB\ReadersController.cs" />
-    <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Author.cs">
+      <DependentUpon>LibraryDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BookLocation.cs">
+      <DependentUpon>LibraryDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Courses.cs">
+      <DependentUpon>LibraryDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DB\Author.cs" />
     <Compile Include="Models\DB\BookLocation.cs" />
-    <Compile Include="Models\DB\Course.cs" />
-    <Compile Include="Models\DB\Discipline.cs" />
+    <Compile Include="Models\DB\Courses.cs" />
     <Compile Include="Models\DB\Enumerators.cs" />
+    <Compile Include="Models\Discipline.cs">
+      <DependentUpon>LibraryDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\DB\LibraryDatabase.cs" />
-    <Compile Include="Models\DB\NewPerson.cs" />
+    <Compile Include="Models\LibraryDatabase.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LibraryDatabase.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LibraryDatabase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LibraryDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LibraryDatabase.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LibraryDatabase.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NewPerson.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\DB\Publication.cs" />
     <Compile Include="Models\DB\Reader.cs" />
-    <Compile Include="Models\DB\Stats.cs" />
+    <Compile Include="Models\Publication.cs">
+      <DependentUpon>LibraryDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Reader.cs">
+      <DependentUpon>LibraryDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Stats.cs">
+      <DependentUpon>LibraryDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Models\DB\LibraryDatabase.sql" />
+    <Content Include="Models\LibraryDatabase.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LibraryDatabase.edmx</DependentUpon>
+      <LastGenOutput>LibraryDatabase.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\LibraryDatabase.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Models\LibraryDatabase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>LibraryDatabase.edmx</DependentUpon>
+      <LastGenOutput>LibraryDatabase.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EntityDeploy Include="Models\LibraryDatabase.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>LibraryDatabase.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\LibraryDatabase.edmx.diagram">
+      <DependentUpon>LibraryDatabase.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -263,9 +313,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\OldIndex.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -311,7 +360,7 @@
     <Content Include="Views\Disciplines\Details.cshtml" />
     <Content Include="Views\Disciplines\Edit.cshtml" />
     <Content Include="Views\Disciplines\Index.cshtml" />
-    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\BookLocations\Create.cshtml" />
     <Content Include="Views\BookLocations\Delete.cshtml" />
     <Content Include="Views\BookLocations\Details.cshtml" />
@@ -322,6 +371,7 @@
     <Content Include="Views\Stats\Details.cshtml" />
     <Content Include="Views\Stats\Edit.cshtml" />
     <Content Include="Views\Stats\Index.cshtml" />
+    <Content Include="Views\Manage\MakeAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

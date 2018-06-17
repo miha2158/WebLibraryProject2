@@ -1,7 +1,13 @@
-﻿@model WebLibraryProject2.Models.Publication
+﻿@using WebLibraryProject2.Models
+@model WebLibraryProject2.Models.Publication
 
 @{
     ViewBag.Title = "Edit";
+    LibraryDatabase db = ViewBag.db;
+    var Authors = new SelectList(db.Authors.ToList());
+    var Courses = new SelectList(db.Courses.ToList());
+    Model.Authors = db.Authors.Where(e => e.Publications.Any(d => d.Id == Model.Id)).ToArray();
+    Model.Courses = db.Courses.Where(e => e.Publications.Any(d => d.Id == Model.Id)).ToArray();
 }
 
 <h2>Edit</h2>
@@ -56,12 +62,18 @@
                 @Html.ValidationMessageFor(model => model.InternetLocation, "", new { @class = "text-danger" })
             </div>
         </div>
-
+        
         <div class="form-group">
-            @Html.LabelFor(model => model.BookPublication, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Authors,new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.BookPublication, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.BookPublication, "", new { @class = "text-danger" })
+                @Html.ListBoxFor(model => model.Authors, Authors, new { @class = "form-control" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Courses, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.ListBoxFor(model => model.Courses, Courses, new { @class = "form-control" })
             </div>
         </div>
 

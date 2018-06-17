@@ -1,31 +1,77 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
+﻿@using Microsoft.AspNet.Identity
+@using WebLibraryProject2.Controllers
 
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <h2>
+        Library Management System
+    </h2>
+    <p>
+        An information system for managing HSE departament library.
+    </p>
+    @if (User.IsInRole("Admin"))
+    {
+        <p>You can view, create, edit and delete any of the following:</p>
+    }
+    else
+    {
+        <p>You can view any of the following:</p>
+    }
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+<div class="row center-1">
+    <div class="col-md-2 center">
+        @Html.ActionLink("Authors", "Index", "Authors", null, new
+        {
+            @class = "btn btn-default"
+        })
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    <div class="col-md-2 center">
+        @Html.ActionLink("Readers", "Index", "Readers", null, new
+        {
+            @class = "btn btn-default"
+        })
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="col-md-2 center">
+        @Html.ActionLink("Publications", "Index", "Publications", null, new
+        {
+            @class = "btn btn-default"
+        })
+    </div>
+    <div class="col-md-2 center">
+        @Html.ActionLink("Locations", "Index", "BookLocations", null, new
+        {
+            @class = "btn btn-default"
+        })
+    </div>
+    <div class="col-md-2 center">
+        @Html.ActionLink("Disciplines", "Index", "Disciplines", null, new
+        {
+            @class = "btn btn-default"
+        })
+    </div>
+    <div class="col-md-2 center">
+        @Html.ActionLink("Stats", "Index", "Stats", null, new
+        {
+            @class = "btn btn-default"
+        })
+    </div>
+    <div class="col-md-2 center">
+        @Html.ActionLink("Courses", "Index", "Courses", null, new
+        {
+            @class = "btn btn-default"
+        })
     </div>
 </div>
+
+@if (User.IsInRole("Admin"))
+{
+    <hr />
+    <div class="row center-1">
+        <div class="col-md-12 center">
+            @Html.ActionLink("Fill with test data!", "TestFill", "Account", null, new
+            {
+                @class = "btn btn-default"
+            })
+        </div>
+    </div>
+}

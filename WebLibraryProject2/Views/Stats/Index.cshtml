@@ -1,5 +1,4 @@
-﻿@using WebLibraryProject2.Controllers
-@model IEnumerable<WebLibraryProject2.Models.Stats>
+﻿@model IEnumerable<WebLibraryProject2.Models.Stats>
 
 @{
     ViewBag.Title = "Index";
@@ -7,8 +6,7 @@
 
 <h2>Index</h2>
 
-
-@if (User.Identity.isAdmin())
+@if (User.IsInRole("Admin"))
 {
     <p>
         @Html.ActionLink("Create New", "Create")
@@ -34,13 +32,12 @@
             @Html.DisplayFor(modelItem => item.DateTaken)
         </td>
         <td>
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @if (User.Identity.isAdmin())
+            @if (User.IsInRole("Admin"))
             {
-                <p>
-                    @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-                </p>
+                <text>
+                    @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
+                    @Html.ActionLink("Delete", "Delete", new {id = item.Id})
+                </text>
             }
         </td>
     </tr>

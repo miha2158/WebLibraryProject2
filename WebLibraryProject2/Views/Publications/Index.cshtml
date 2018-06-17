@@ -8,7 +8,7 @@
 <h2>Index</h2>
 
 
-@if (User.Identity.isAdmin())
+@if (User.IsInRole("Admin"))
 {
     <p>
         @Html.ActionLink("Create New", "Create")
@@ -32,9 +32,8 @@
             @Html.DisplayNameFor(model => model.InternetLocation)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.BookPublication)
+            
         </th>
-        <th></th>
     </tr>
 
 @foreach (var item in Model) {
@@ -46,7 +45,7 @@
             @Html.DisplayFor(modelItem => item.DatePublished)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.PublicationType)
+            @Html.DisplayFor(modelItem => item.toEnumPT)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Publisher)
@@ -55,16 +54,14 @@
             @Html.DisplayFor(modelItem => item.InternetLocation)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.BookPublication)
-        </td>
-        <td>
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @if (User.Identity.isAdmin())
+            @Html.ActionLink("Details", "Details", new { id=item.Id })
+            @if (User.IsInRole("Admin"))
             {
-                <p>
+                <text>
+                    &nbsp;|
                     @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
                     @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-                </p>
+                </text>
             }
         </td>
     </tr>

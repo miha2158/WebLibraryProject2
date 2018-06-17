@@ -25,6 +25,11 @@ namespace WebLibraryProject2.Models
         public string Purpose { get; set; }
     }
 
+    public class AdminifyViewModel
+    {
+        public string userName { get; set; } = string.Empty;
+    }
+
     public class SetPasswordViewModel
     {
         [Required]

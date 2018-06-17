@@ -40,7 +40,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.AccessLevel)
+            @Html.DisplayFor(model => model.toEnumAL)
         </dd>
 
         <dt>
@@ -53,12 +53,15 @@
 
     </dl>
 </div>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Edit", "Edit", new
+        {
+            id = Model.Id
+        }) |
+    </p>
+}
 <p>
-    @if (User.Identity.isAdmin())
-    {
-        <p>
-            @Html.ActionLink("Edit", "Edit", new {id = Model.Id}) |
-        </p>
-    }
     @Html.ActionLink("Back to List", "Index")
 </p>

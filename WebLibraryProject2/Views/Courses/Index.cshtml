@@ -8,7 +8,7 @@
 <h2>Index</h2>
 
 
-@if (User.Identity.isAdmin())
+@if (User.IsInRole("Admin"))
 {
     <p>
         @Html.ActionLink("Create New", "Create")
@@ -28,13 +28,12 @@
             @Html.DisplayFor(modelItem => item.Course)
         </td>
         <td>
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @if (User.Identity.isAdmin())
+            @if (User.IsInRole("Admin"))
             {
-                <p>
+                <text>
                     @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
                     @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-                </p>
+                </text>
             }
         </td>
     </tr>

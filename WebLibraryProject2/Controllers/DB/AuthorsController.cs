@@ -12,16 +12,24 @@ namespace WebLibraryProject2.Controllers
 {
     public class AuthorsController : Controller
     {
+        public LibraryDatabase db =  new LibraryDatabase();
+
         // GET: Authors
-        public ActionResult Index()
+        public ActionResult Index(int? PublicationId)
         {
-            using (var db = new LibraryDatabase())
             {
-                return View(db.Authors.ToList());
+                if (PublicationId == null)
+                    return View(db.Authors.ToList());
+                return View( db.Authors.Where(e => e.Publications.Any(f => f.Id == PublicationId)).ToList());
             }
         }
 
-        // GET: Authors/Details/5
+        public ActionResult Publications(int AuthorId)
+        {
+            return RedirectToAction("Index", "Publications", new { PublicationId = AuthorId });
+        }
+
+        // GET: Authors/Details
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -29,7 +37,6 @@ namespace WebLibraryProject2.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            using (var db = new LibraryDatabase())
             {
                 Author author = db.Authors.Find(id);
                 if (author == null)
@@ -44,7 +51,7 @@ namespace WebLibraryProject2.Controllers
         // GET: Authors/Create
         public ActionResult Create()
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
             return View();
         }
@@ -55,22 +62,18 @@ namespace WebLibraryProject2.Controllers
         public ActionResult Create([Bind(Include = "Id,First,Last,Patronimic,WriterType")] Author author)
         {
             if (ModelState.IsValid)
-            {
-                using (var db = new LibraryDatabase())
-                {
-                    db.Authors.Add(author);
-                    db.SaveChanges();
-                }
+        {
+                db.Authors.Add(author);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             return View(author);
         }
 
-        // GET: Authors/Edit/5
+        // GET: Authors/Edit
         public ActionResult Edit(int? id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             if (id == null)
@@ -78,7 +81,6 @@ namespace WebLibraryProject2.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            using (var db = new LibraryDatabase())
             {
                 Author author = db.Authors.Find(id);
                 if (author == null)
@@ -90,30 +92,28 @@ namespace WebLibraryProject2.Controllers
             }
         }
 
-        // POST: Authors/Edit/5
+        // POST: Authors/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,First,Last,Patronimic,WriterType")] Author author)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             if (ModelState.IsValid)
             {
-                using (var db = new LibraryDatabase())
-                {
-                    db.Entry(author).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
+                db.Entry(author).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             return View(author);
         }
 
-        // GET: Authors/Delete/5
+        // GET: Authors/Delete
         public ActionResult Delete(int? id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             if (id == null)
@@ -121,7 +121,6 @@ namespace WebLibraryProject2.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            using (var db = new LibraryDatabase())
             {
                 Author author = db.Authors.Find(id);
                 if (author == null)
@@ -133,20 +132,25 @@ namespace WebLibraryProject2.Controllers
             }
         }
 
-        // POST: Authors/Delete/5
+        // POST: Authors/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if (!User.Identity.isAdmin())
+            if (!User.IsInRole("Admin"))
                 return HttpNotFound();
-            using (var db = new LibraryDatabase())
             {
                 Author author = db.Authors.Find(id);
                 db.Authors.Remove(author);
                 db.SaveChanges();
             }
             return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            db?.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

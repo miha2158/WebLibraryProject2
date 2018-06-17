@@ -8,7 +8,7 @@
 <h2>Index</h2>
 
 
-@if (User.Identity.isAdmin())
+@if (User.IsInRole("Admin"))
 {
     <p>
         @Html.ActionLink("Create New", "Create")
@@ -17,10 +17,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.First)
+            @Html.DisplayNameFor(model => model.Last)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Last)
+            @Html.DisplayNameFor(model => model.First)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Patronimic)
@@ -37,29 +37,39 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.First)
+            @Html.DisplayFor(modelItem => item.Last)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Last)
+            @Html.DisplayFor(modelItem => item.First)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Patronimic)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.AccessLevel)
+            @Html.DisplayFor(modelItem => item.toEnumAL)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Group)
         </td>
         <td>
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @if (User.Identity.isAdmin())
+            @Html.ActionLink("Details", "Details", new
+        {
+            id = item.Id
+        })
+            @if (User.IsInRole("Admin"))
+        {
+            <text>
+                &nbsp;|
+                @Html.ActionLink("Edit", "Edit", new
             {
-                <p>
-                    @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-                </p>
-            }
+                id = item.Id
+            }) |
+                @Html.ActionLink("Delete", "Delete", new
+            {
+                id = item.Id
+            })
+            </text>
+    }
         </td>
     </tr>
 }

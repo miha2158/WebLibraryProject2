@@ -7,52 +7,8 @@ using System.Linq;
 
 namespace WebLibraryProject2.Models
 {
-    [Table("Publication")]
     public partial class Publication
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Publication()
-        {
-            BookLocations = new HashSet<BookLocation>();
-            Stats = new HashSet<Stats>();
-            Disciplines = new HashSet<Discipline>();
-            Authors = new HashSet<Author>();
-            Courses = new HashSet<Courses>();
-        }
-
-        public int Id { get; set; }
-
-        [Required]
-        [StringLength(70)]
-        public string Name { get; set; }
-
-        public DateTime DatePublished { get; set; }
-
-        public byte PublicationType { get; set; }
-
-        [StringLength(25)]
-        public string Publisher { get; set; }
-
-        public string InternetLocation { get; set; }
-
-        public byte BookPublication { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BookLocation> BookLocations { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Stats> Stats { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Discipline> Disciplines { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Author> Authors { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Courses> Courses { get; set; }
-
-
         private Publication(string Name, ePublicationType PublicationType, eBookPublication BookPublication, DateTime DatePublished, string Publisher)
         {
             this.Name = Name;
@@ -130,7 +86,7 @@ namespace WebLibraryProject2.Models
             {
                 using (var db = new LibraryDatabase())
                 {
-                    return db.Publications.Find(Id).BookLocations.Count;
+                    return db.Publications.Find(Id)?.BookLocations.Count ?? 0;
                 }
             }
         }
@@ -140,7 +96,7 @@ namespace WebLibraryProject2.Models
             {
                 using (var db = new LibraryDatabase())
                 {
-                    return db.Publications.Find(Id).BookLocations.Count(e => e.IsTaken);
+                    return db.Publications.Find(Id)?.BookLocations.Count(e => e.IsTaken) ?? 0;
                 }
             }
         }
@@ -150,7 +106,7 @@ namespace WebLibraryProject2.Models
             {
                 using (var db = new LibraryDatabase())
                 {
-                    return db.Publications.Find(Id).Stats.Count;
+                    return db.Publications.Find(Id)?.Stats.Count ?? 0;
                 }
             }
         }

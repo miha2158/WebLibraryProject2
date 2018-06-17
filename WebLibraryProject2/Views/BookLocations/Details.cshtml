@@ -1,5 +1,4 @@
-﻿@using WebLibraryProject2.Controllers
-@model WebLibraryProject2.Models.BookLocation
+﻿@model WebLibraryProject2.Models.BookLocation
 
 @{
     ViewBag.Title = "Details";
@@ -20,11 +19,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Reader.First)
+            @Html.DisplayNameFor(model => model.Reader.Last)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Reader.First)
+            @Html.DisplayFor(model => model.Reader.Last)
         </dd>
 
         <dt>
@@ -53,12 +52,15 @@
 
     </dl>
 </div>
-<p>
-    @if (User.Identity.isAdmin())
+    @if (User.IsInRole("Admin"))
     {
         <p>
-            @Html.ActionLink("Edit", "Edit", new {id = Model.Id}) |
+            @Html.ActionLink("Edit", "Edit", new
+            {
+                id = Model.Id
+            }) |
         </p>
     }
+<p>
     @Html.ActionLink("Back to List", "Index")
 </p>
