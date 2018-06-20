@@ -12,18 +12,21 @@
 <h2>@ViewBag.Title</h2>
 @if (Model == null)
 {
-    @Html.BeginForm()
+    using (@Html.BeginForm())
     {
-        if (true) { }
-        <div class="row center">
-            @Html.TextBox("SearchBox", null, new { @class = "form-control" })
-            <input type="submit" class="btn btn-default btn-primary" value="Search!">
+        <div class="row center-1">
+            @Html.TextBox("SearchBox", null, new
+       {
+           @class = "form-control",
+           style = "max-width:9999px; width:90%; display:inline;"
+       })
+            <input type="submit" class="btn btn-default btn-primary col-md-1" value="Find in..." style="float: right;">
         </div>
     }
 }
 else
 {
-    @Html.ActionLink($"{t} - Publications", "Publications", new {Search = t})
-    @Html.ActionLink($"{t} - Authors", "Authors", new {Search = t})
-    @Html.ActionLink($"{t} - Readers", "Readers", new {Search = t})
+    <p>@Html.ActionLink($"'{t}' - Publications", "Publications", new {Search = t})</p>
+    <p>@Html.ActionLink($"'{t}' - Authors", "Authors", new {Search = t})</p>
+    <p>@Html.ActionLink($"'{t}' - Readers", "Readers", new {Search = t})</p>
 }

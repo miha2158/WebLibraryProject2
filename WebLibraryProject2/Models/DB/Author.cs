@@ -10,7 +10,11 @@ namespace WebLibraryProject2.Models
 {
     public partial class Author
     {
-        public eWriterType toEnumWT => (eWriterType)WriterType;
+        public eWriterType toEnumWT
+        {
+            get => (eWriterType) WriterType;
+            set => WriterType = (byte) value;
+        }
 
         public Author(string First, string Last, string Patronimic, eWriterType WriterType) : this()
         {

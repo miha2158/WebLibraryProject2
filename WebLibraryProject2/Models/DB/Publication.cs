@@ -130,8 +130,16 @@ namespace WebLibraryProject2.Models
                 }
             }
         }
-        public ePublicationType toEnumPT => (ePublicationType)PublicationType;
-        public eBookPublication toEnumBP => (eBookPublication)BookPublication;
+        public ePublicationType toEnumPT
+        {
+            get => (ePublicationType) PublicationType;
+            set => PublicationType = (byte)value;
+        }
+        public eBookPublication toEnumBP
+        {
+            get => (eBookPublication) BookPublication;
+            set => BookPublication = (byte)value;
+        }
 
 
         public IEnumerable<Reader> Readers

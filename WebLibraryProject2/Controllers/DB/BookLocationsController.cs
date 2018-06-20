@@ -112,16 +112,17 @@ namespace WebLibraryProject2.Controllers.DB
         // POST: BookLocations/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Room,Place,IsTaken,Publications,Readers")]
-                                 BookLocation bookLocation)
+        public ActionResult Edit([Bind(Include = "Id,Room,Place,IsTaken")] BookLocation bookLocation, string Readers)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
             if (ModelState.IsValid)
             {
+                var Reader = db.Readers.ToList().First(e => e.ToString() == Readers);
                 db.Entry(bookLocation).State = EntityState.Modified;
                 if (!db.BookLocations.Find(bookLocation.Id).IsTaken && bookLocation.IsTaken)
                     db.Stats.Add(new Stats {DateTaken = DateTime.Now, Publication = bookLocation.Publication});
+                db.BookLocations.Find(bookLocation.Id).Reader = Reader;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

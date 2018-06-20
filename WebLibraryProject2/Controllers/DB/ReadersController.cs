@@ -25,7 +25,7 @@ namespace WebLibraryProject2.Controllers
                                        d.Last.ToLower().Contains(query) ||
                                        d.Patronimic.ToLower().Contains(query) ||
                                        d.Group.ToString().ToLower().Contains(query) ||
-                                       d.Id.ToString().ToLower().Contains(query));
+                                       d.toEnumAL.ToString().Contains(query));
             }
             return View(list.ToList());
         }
@@ -72,6 +72,9 @@ namespace WebLibraryProject2.Controllers
             
             if (ModelState.IsValid)
             {
+                if (reader.Group == null)
+                    reader.Group = string.Empty;
+
                 db.Readers.Add(reader);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -111,6 +114,8 @@ namespace WebLibraryProject2.Controllers
 
             if (ModelState.IsValid)
             {
+                if (reader.Group == null)
+                    reader.Group = string.Empty;
                 db.Entry(reader).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

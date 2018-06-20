@@ -10,7 +10,11 @@ namespace WebLibraryProject2.Models
 {
     public partial class Reader
     {
-        public eAccessLevel toEnumAL => (eAccessLevel)AccessLevel;
+        public eAccessLevel toEnumAL
+        {
+            get => (eAccessLevel) AccessLevel;
+            set => AccessLevel = (byte) value;
+        }
 
         public Reader(string First, string Last, string Patronimic) : this()
         {

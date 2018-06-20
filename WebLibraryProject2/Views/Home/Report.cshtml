@@ -1,0 +1,54 @@
+﻿@using WebLibraryProject2.Models
+
+@{
+    ViewBag.Title = "Report";
+    LibraryDatabase db = new LibraryDatabase();
+    var author = db.Authors.ToList();
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Report", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken();
+
+    <div class="form-group">
+        <select id="reportType" name="reportType" class="form-control" >
+            <option value="0">Departament Work Report</option>
+            <option value="1">Popularity Report</option>
+            <option value="2">Taken Report</option>
+        </select>
+
+        <dl>
+            <dt>
+                From:
+            </dt>
+
+            <dd>
+                <input type="date" id="dateStart" name="dateStart" class="form-control"/>
+            </dd>
+        
+            <dt>
+                To:
+            </dt>
+
+            <dd>
+                <input type="date" id="dateEnd" name="dateEnd" class="form-control"/>
+            </dd>
+        </dl>
+        
+        <select id="authors" name="authors" multiple="multiple" class="form-control">
+            @foreach (var item in author)
+            {
+                <option value="@item.Id">@item.ToString()</option>
+            }
+        </select>
+        
+        <input type="submit" value="Create Report" class="btn btn-default"/>
+
+    </div>
+}
+
+@{
+    db.Dispose();
+}
