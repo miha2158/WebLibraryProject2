@@ -15,12 +15,28 @@ namespace WebLibraryProject2.Controllers
         public LibraryDatabase db = new LibraryDatabase();
 
         // GET: Publications
-        public ActionResult Index(int? AuthorId)
+        public ActionResult Index(int? AuthorId, int? CourseId, int? ReaderId, string Search)
         {
             {
-                if (AuthorId == null)
-                    return View(db.Publications.ToList());
-                return View(db.Publications.Where(d => d.Authors.Any(f => f.Id == AuthorId)).ToList());
+                
+                var list = db.Publications.AsQueryable();
+                if (AuthorId != null)
+                    list = list.Where(d => d.Authors.Any(f => f.Id == AuthorId));
+                if (CourseId != null)
+                    list = list.Where(d => d.Courses.Any(f => f.Id == CourseId));
+                if (ReaderId != null)
+                    list = list.Where(d => d.BookLocations.Any(e => e.Reader.Id == ReaderId));
+                if (Search != null)
+                {
+                    string query = Search.ToLower();
+                    list = list.Where(d => d.Name.ToLower().Contains(query) ||
+                                           d.DatePublished.ToLongDateString().ToLower().Contains(query) ||
+                                           d.Courses.Any(f => f.Course.ToString().ToLower().Contains(query)) ||
+                                           d.Disciplines.Any(f => f.Name.ToLower().Contains(query)) ||
+                                           d.toEnumBP.ToString().ToLower().Contains(query) ||
+                                           d.toEnumPT.ToString().ToLower().Contains(query));
+                }
+                return View(list.ToList());
             }
         }
 

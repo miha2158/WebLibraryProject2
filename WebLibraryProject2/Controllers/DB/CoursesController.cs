@@ -24,6 +24,11 @@ namespace WebLibraryProject2.Controllers
             }
         }
 
+        public ActionResult Publications(int CourseId)
+        {
+            return RedirectToAction("Index", "Publications", new {CourseId = CourseId});
+        }
+
         // GET: Courses/Details
         public ActionResult Details(int? id)
         {
@@ -55,7 +60,7 @@ namespace WebLibraryProject2.Controllers
         // POST: Courses/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CourseNumber")] Courses course)
+        public ActionResult Create([Bind(Include = "Id,Course")] Courses course)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
@@ -145,6 +150,11 @@ namespace WebLibraryProject2.Controllers
 
             {
                 Courses course = db.Courses.Find(id);
+                var publications = db.Publications.Where(e => e.Courses.Any(d => d.Id == course.Id)).ToList();
+                foreach (var pub in publications)
+                {
+                    pub.Courses.Remove(course);
+                }
                 db.Courses.Remove(course);
                 db.SaveChanges();
             }

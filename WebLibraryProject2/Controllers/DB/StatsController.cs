@@ -150,6 +150,8 @@ namespace WebLibraryProject2.Controllers.DB
 
             {
                 Stats stats = db.Stats.Find(id);
+                var publication = db.Publications.First(e => e.Stats.Any(d => d.Id == stats.Id));
+                publication.Stats.Remove(stats);
                 db.Stats.Remove(stats);
                 db.SaveChanges();
             }

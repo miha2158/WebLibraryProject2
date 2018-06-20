@@ -61,6 +61,12 @@
             @class = "btn btn-default"
         })
     </div>
+    <div class="col-md-2 center">
+        @Html.ActionLink("Search", "Search", "Home", null, new
+        {
+            @class = "btn btn-default"
+        })
+    </div>
 </div>
 
 @if (User.IsInRole("Admin"))

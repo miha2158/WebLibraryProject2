@@ -166,6 +166,14 @@ namespace WebLibraryProject2.Controllers.DB
 
             {
                 BookLocation bookLocation = db.BookLocations.Find(id);
+                var publications = db.Publications.Where(e => e.BookLocations.Any(f => f.Id == bookLocation.Id));
+                foreach (Publication publication in publications)
+                    publication.BookLocations.Remove(bookLocation);
+
+                var readers = db.Readers.Where(e => e.BookLocations.Any(f => f.Id == bookLocation.Id));
+                foreach (Reader reader in readers)
+                    reader.BookLocations.Remove(bookLocation);
+
                 db.BookLocations.Remove(bookLocation);
                 db.SaveChanges();
             }

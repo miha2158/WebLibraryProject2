@@ -15,9 +15,24 @@ namespace WebLibraryProject2.Controllers
         public LibraryDatabase db = new LibraryDatabase();
 
         // GET: Readers
-        public ActionResult Index()
+        public ActionResult Index(string Search)
         {
-                return View(db.Readers.ToList());
+            var list = db.Readers.AsQueryable();
+            if (Search != null)
+            {
+                string query = Search.ToLower();
+                list = list.Where(d => d.First.ToLower().Contains(query) ||
+                                       d.Last.ToLower().Contains(query) ||
+                                       d.Patronimic.ToLower().Contains(query) ||
+                                       d.Group.ToString().ToLower().Contains(query) ||
+                                       d.Id.ToString().ToLower().Contains(query));
+            }
+            return View(list.ToList());
+        }
+
+        public ActionResult Publications(int ReaderId)
+        {
+            return RedirectToAction("Index", "Publications", new {ReaderId = ReaderId});
         }
 
         // GET: Readers/Details

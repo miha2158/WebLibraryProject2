@@ -18,6 +18,14 @@
         <dd>
             @Html.DisplayFor(model => model.Course)
         </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Publications)
+        </dt>
+        
+        <dd>
+            @Html.ActionLink("Publications", "Publications", new{ CourseId = Model.Id })
+        </dd>
 
     </dl>
 </div>

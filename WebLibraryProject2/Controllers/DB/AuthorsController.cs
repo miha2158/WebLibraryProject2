@@ -15,12 +15,22 @@ namespace WebLibraryProject2.Controllers
         public LibraryDatabase db =  new LibraryDatabase();
 
         // GET: Authors
-        public ActionResult Index(int? PublicationId)
+        public ActionResult Index(int? PublicationId, string Search)
         {
             {
-                if (PublicationId == null)
-                    return View(db.Authors.ToList());
-                return View( db.Authors.Where(e => e.Publications.Any(f => f.Id == PublicationId)).ToList());
+                var list = db.Authors.AsQueryable();
+                if (PublicationId != null)
+                    list = list.Where(e => e.Publications.Any(f => f.Id == PublicationId));
+                if (Search != null)
+                {
+                    var query = Search.ToLower();
+                    list = list.Where(g => g.First.ToLower().Contains(query) ||
+                                           g.Last.ToLower().Contains(query) ||
+                                           g.Patronimic.ToLower().Contains(query) ||
+                                           g.toEnumWT.ToString().ToLower().Contains(query) ||
+                                           g.Id.ToString().ToLower().Contains(query));
+                }
+                return View(list.ToList());
             }
         }
 
@@ -141,6 +151,11 @@ namespace WebLibraryProject2.Controllers
                 return HttpNotFound();
             {
                 Author author = db.Authors.Find(id);
+                var publications = db.Publications.Where(e => e.Authors.Any(f => f.Id == author.Id));
+                foreach (Publication publication in publications)
+                {
+                    publication.Authors.Remove(author);
+                }
                 db.Authors.Remove(author);
                 db.SaveChanges();
             }

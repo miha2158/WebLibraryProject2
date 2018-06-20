@@ -225,6 +225,7 @@
     <Compile Include="Models\Discipline.cs">
       <DependentUpon>LibraryDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LibraryDatabase.Context.cs">
       <AutoGen>True</AutoGen>
@@ -314,7 +315,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\OldIndex.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -372,6 +372,7 @@
     <Content Include="Views\Stats\Edit.cshtml" />
     <Content Include="Views\Stats\Index.cshtml" />
     <Content Include="Views\Manage\MakeAdmin.cshtml" />
+    <Content Include="Views\Home\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

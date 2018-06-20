@@ -142,6 +142,11 @@ namespace WebLibraryProject2.Controllers
             Discipline discipline;
             {
                 discipline = db.Disciplines.Find(id);
+                var publications = db.Publications.Where(e => e.Disciplines.Any(f => f.Id == discipline.Id));
+                foreach (var publication in publications)
+                {
+                    publication.Disciplines.Remove(discipline);
+                }
                 db.Disciplines.Remove(discipline);
                 db.SaveChanges();
             }
