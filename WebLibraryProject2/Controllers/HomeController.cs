@@ -60,9 +60,9 @@ namespace WebLibraryProject2.Controllers
                 if (authors != null)
                     Authors = Authors.Where(e => authors.Contains(e.Id)).ToList();
 
-                var publications = db.Publications.Where(e => e.Authors.Any(f => Authors.Contains(f)));
+                var publications = db.Publications.ToList().Where(e => e.Authors.Any(f => Authors.Contains(f)));
 
-                var stats = db.Stats.Where(e => publications.Contains(e.Publication)).ToList();
+                var stats = db.Stats.ToList().Where(e => publications.Contains(e.Publication)).ToList();
                 if (dateStart.HasValue)
                     stats = stats.Where(e => e.DateTaken >= dateStart).ToList();
                 if (dateEnd.HasValue)
