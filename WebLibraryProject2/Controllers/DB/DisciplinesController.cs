@@ -12,7 +12,7 @@ namespace WebLibraryProject2.Controllers
 {
     public class DisciplinesController : Controller
     {
-        public LibraryDatabase db;
+        public LibraryDatabase db = new LibraryDatabase();
 
         // GET: Disciplines
         public ActionResult Index()

@@ -17,7 +17,7 @@ namespace WebLibraryProject2.Controllers
         // GET: Readers
         public ActionResult Index(string Search)
         {
-            var list = db.Readers.AsQueryable();
+            var list = db.Readers.ToList();
             if (Search != null)
             {
                 string query = Search.ToLower();
@@ -25,7 +25,7 @@ namespace WebLibraryProject2.Controllers
                                        d.Last.ToLower().Contains(query) ||
                                        d.Patronimic.ToLower().Contains(query) ||
                                        d.Group.ToString().ToLower().Contains(query) ||
-                                       d.toEnumAL.ToString().Contains(query));
+                                       d.toEnumAL.ToString().Contains(query)).ToList();
             }
             return View(list.ToList());
         }

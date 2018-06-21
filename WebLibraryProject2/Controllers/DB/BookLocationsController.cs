@@ -130,8 +130,6 @@ namespace WebLibraryProject2.Controllers.DB
             ViewBag.Publications = new SelectList(db.Publications, bookLocation.Publication);
             ViewBag.Readers = new SelectList(db.Readers, bookLocation.Reader);
 
-            db.Dispose();
-            db = null;
             return View(bookLocation);
         }
 

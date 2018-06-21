@@ -19,13 +19,13 @@ namespace WebLibraryProject2.Controllers
         {
             {
                 
-                var list = db.Publications.AsQueryable();
+                var list = db.Publications.ToList();
                 if (AuthorId != null)
-                    list = list.Where(d => d.Authors.Any(f => f.Id == AuthorId));
+                    list = list.Where(d => d.Authors.Any(f => f.Id == AuthorId)).ToList();
                 if (CourseId != null)
-                    list = list.Where(d => d.Courses.Any(f => f.Id == CourseId));
+                    list = list.Where(d => d.Courses.Any(f => f.Id == CourseId)).ToList();
                 if (ReaderId != null)
-                    list = list.Where(d => d.BookLocations.Any(e => e.Reader.Id == ReaderId));
+                    list = list.Where(d => d.BookLocations.Any(e => e.Reader.Id == ReaderId)).ToList();
                 if (Search != null)
                 {
                     string query = Search.ToLower();
@@ -34,7 +34,7 @@ namespace WebLibraryProject2.Controllers
                                            d.Courses.Any(f => f.Course.ToString().ToLower().Contains(query)) ||
                                            d.Disciplines.Any(f => f.Name.ToLower().Contains(query)) ||
                                            d.toEnumBP.ToString().ToLower().Contains(query) ||
-                                           d.toEnumPT.ToString().ToLower().Contains(query));
+                                           d.toEnumPT.ToString().ToLower().Contains(query)).ToList();
                 }
                 return View(list.ToList());
             }
@@ -88,7 +88,9 @@ namespace WebLibraryProject2.Controllers
         // POST: Publications/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation")] Publication publication, string[] Authors, string[] Courses)
+        public ActionResult Create(
+            [Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation")]
+            Publication publication, string[] Authors, string[] Courses)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();

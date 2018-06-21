@@ -18,17 +18,16 @@ namespace WebLibraryProject2.Controllers
         public ActionResult Index(int? PublicationId, string Search)
         {
             {
-                var list = db.Authors.AsQueryable();
+                var list = db.Authors.ToList();
                 if (PublicationId != null)
-                    list = list.Where(e => e.Publications.Any(f => f.Id == PublicationId));
+                    list = list.Where(e => e.Publications.Any(f => f.Id == PublicationId)).ToList();
                 if (Search != null)
                 {
                     var query = Search.ToLower();
                     list = list.Where(g => g.First.ToLower().Contains(query) ||
                                            g.Last.ToLower().Contains(query) ||
                                            g.Patronimic.ToLower().Contains(query) ||
-                                           g.toEnumWT.ToString().ToLower().Contains(query) ||
-                                           g.Id.ToString().ToLower().Contains(query));
+                                           g.toEnumWT.ToString().ToLower().Contains(query)).ToList();
                 }
                 return View(list.ToList());
             }
