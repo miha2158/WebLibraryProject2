@@ -82,7 +82,7 @@ namespace WebLibraryProject2.Controllers
                 {
                     case 0:
                     {
-                        var res = publications.Where(d => d.Authors.Any(f => f.toEnumWT == eWriterType.HseTeacher))
+                        var res = publications.Where(d => Authors.Any(e => d.Authors.Contains(e)))
                                         .OrderBy(d => d.DDate)
                                         .ToArray();
 
@@ -92,9 +92,6 @@ namespace WebLibraryProject2.Controllers
 
                         for (int i = 0, offset = 2; i < res.Length; i++)
                         {
-                            if (i == 0 || res[i].BookPublication != res[i - 1].BookPublication)
-                                wsheet.Cells[i + offset++, 1] = $"{res[i].toEnumBP}s";
-
                             var authors1 = res[i].Authors
                                                 .OrderBy(d => d.WriterType)
                                                 .Select(d => d.ToString())
@@ -111,8 +108,7 @@ namespace WebLibraryProject2.Controllers
                     case 1:
                     {
                         var res = publications.Where(e => e.Stats.Count > 0)
-                                        .OrderBy(d => d.Stats.Count(e => stats.Contains(e)))
-                                        .Reverse()
+                                        .OrderByDescending(d => d.Stats.Count(e => stats.Contains(e)))
                                         .ToArray();
 
                         wsheet.Cells[1, 1] = "Название";
@@ -169,6 +165,8 @@ namespace WebLibraryProject2.Controllers
                 wsheet.Rows.AutoFit();
 
                 fileName = $@"D:\Projects\WebLibraryProject2\WebLibraryProject2\bin\Report{reportType}.xlsx";
+                if(System.IO.File.Exists(fileName))
+                    System.IO.File.Delete(fileName);
                 wbook.SaveAs(fileName);
                 wbook.Close(0);
                 app.Quit();

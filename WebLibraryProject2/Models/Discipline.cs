@@ -7,6 +7,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.ComponentModel.DataAnnotations;
+
 namespace WebLibraryProject2.Models
 {
     using System;
@@ -21,6 +23,7 @@ namespace WebLibraryProject2.Models
         }
     
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

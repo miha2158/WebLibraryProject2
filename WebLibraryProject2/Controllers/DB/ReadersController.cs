@@ -65,7 +65,7 @@ namespace WebLibraryProject2.Controllers
         // POST: Readers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,First,Last,Patronimic,AccessLevel,Group")] Reader reader)
+        public ActionResult Create([Bind(Include = "Id,First,Last,Patronimic,toEnumAL,Group")] Reader reader)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
@@ -106,7 +106,7 @@ namespace WebLibraryProject2.Controllers
         // POST: Readers/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,First,Last,Patronimic,AccessLevel,Group")] Reader reader)
+        public ActionResult Edit([Bind(Include = "Id,First,Last,Patronimic,toEnumAL,Group")] Reader reader)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();

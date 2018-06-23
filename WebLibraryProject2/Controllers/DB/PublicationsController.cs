@@ -89,7 +89,7 @@ namespace WebLibraryProject2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(
-            [Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation")] Publication publication, string[] Authors, string[] Courses, string[] Disciplines)
+            [Bind(Include = "Id,Name,DatePublished,toEnumPT,Publisher,InternetLocation")] Publication publication, string[] Authors, string[] Courses, string[] Disciplines)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
@@ -147,13 +147,20 @@ namespace WebLibraryProject2.Controllers
         // POST: Publications/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation")] Publication publication, string[] Authors, string[] Courses, string[] Disciplines)
+        public ActionResult Edit([Bind(Include = "Id,Name,DatePublished,toEnumPT,Publisher,InternetLocation")] Publication publication, string[] Authors, string[] Courses, string[] Disciplines)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
             ViewBag.db = db;
 
-            publication = db.Publications.Find(publication.Id);
+            var publication2 = db.Publications.Find(publication.Id);
+            publication2.Id = publication.Id;
+            publication2.Publisher = publication2.Publisher;
+            publication2.Name = publication.Name;
+            publication2.toEnumPT = publication.toEnumPT;
+            publication2.DatePublished = publication.DatePublished;
+            publication2.InternetLocation = publication.InternetLocation;
+            publication = publication2;
 
             if(Authors != null)
             {

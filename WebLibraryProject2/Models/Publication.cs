@@ -7,6 +7,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.ComponentModel.DataAnnotations;
+
 namespace WebLibraryProject2.Models
 {
     using System;
@@ -25,9 +27,13 @@ namespace WebLibraryProject2.Models
         }
     
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public System.DateTime DatePublished { get; set; }
+        [Required]
         public byte PublicationType { get; set; }
+        [Required]
         public string Publisher { get; set; }
         public string InternetLocation { get; set; }
         public byte BookPublication { get; set; }

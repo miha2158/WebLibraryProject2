@@ -68,14 +68,15 @@ namespace WebLibraryProject2.Controllers
         // POST: Authors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,First,Last,Patronimic,WriterType")] Author author)
+        public ActionResult Create([Bind(Include = "Id,First,Last,Patronimic,toEnumWT")] Author author)
         {
             if (ModelState.IsValid)
-        {
+            {
                 db.Authors.Add(author);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             return View(author);
         }
 
@@ -104,7 +105,7 @@ namespace WebLibraryProject2.Controllers
         // POST: Authors/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,First,Last,Patronimic,WriterType")] Author author)
+        public ActionResult Edit([Bind(Include = "Id,First,Last,Patronimic,toEnumWT")] Author author)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
