@@ -89,8 +89,7 @@ namespace WebLibraryProject2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(
-            [Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation")]
-            Publication publication, string[] Authors, string[] Courses)
+            [Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation")] Publication publication, string[] Authors, string[] Courses, string[] Disciplines)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
@@ -106,6 +105,12 @@ namespace WebLibraryProject2.Controllers
             {
                 if(Courses.Any(e => e == course.ToString()))
                     publication.Courses.Add(course);
+            }
+
+            foreach (var discipline in db.Disciplines)
+            {
+                if (Disciplines.Any(e => e == discipline.ToString()))
+                    publication.Disciplines.Add(discipline);
             }
 
             if (ModelState.IsValid)
@@ -142,61 +147,37 @@ namespace WebLibraryProject2.Controllers
         // POST: Publications/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation")] Publication publication, string[] Authors, string[] Courses)
+        public ActionResult Edit([Bind(Include = "Id,Name,DatePublished,PublicationType,Publisher,InternetLocation")] Publication publication, string[] Authors, string[] Courses, string[] Disciplines)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
             ViewBag.db = db;
 
+            publication = db.Publications.Find(publication.Id);
+
+            if(Authors != null)
             {
-                var authors = new List<Author>();
-                foreach (Author author in db.Authors)
-                {
+                publication.Authors.Clear();
+                foreach (var author in db.Authors)
                     if (Authors.Any(e => e == author.ToString()))
-                        authors.Add(author);
-                }
-
-                foreach (Author author in publication.Authors)
-                {
-                    if (!authors.Contains(author))
-                        publication.Authors.Remove(author);
-                }
-
-                foreach (Author author in authors)
-                {
-                    if (!publication.Authors.Contains(author))
                         publication.Authors.Add(author);
-                }
             }
 
-
+            if(Courses != null)
             {
-                var courses = new List<Courses>();
+                publication.Courses.Clear();
                 foreach (Courses course in db.Courses)
-                {
-                    if (Courses.Any(e => e == course.ToString()))
-                        courses.Add(course);
-                }
-
-                foreach (Courses course in publication.Courses)
-                {
-                    if (!courses.Contains(course))
-                        publication.Courses.Remove(course);
-                }
-
-                foreach (Courses course in courses)
-                {
-                    if (!publication.Courses.Contains(course))
-                        publication.Courses.Add(course);
-                }
-
-                foreach (Courses course in db.Courses)
-                {
                     if (Courses.Any(e => e == course.ToString()))
                         publication.Courses.Add(course);
-                }
             }
 
+            if(Disciplines != null)
+            {
+                publication.Disciplines.Clear();
+                foreach (var discipline in db.Disciplines)
+                    if (Disciplines.Any(e => e == discipline.ToString()))
+                        publication.Disciplines.Add(discipline);
+            }
 
             if (ModelState.IsValid)
             {
@@ -214,6 +195,7 @@ namespace WebLibraryProject2.Controllers
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
+            ViewBag.db = db;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -239,6 +221,12 @@ namespace WebLibraryProject2.Controllers
 
             {
                 Publication publication = db.Publications.Find(id);
+                publication.Authors.Clear();
+                publication.Courses.Clear();
+                publication.Disciplines.Clear();
+                foreach (BookLocation location in db.BookLocations)
+                    if (Equals(location.Publication, publication))
+                        db.BookLocations.Remove(location);
                 db.Publications.Remove(publication);
                 db.SaveChanges();
             }

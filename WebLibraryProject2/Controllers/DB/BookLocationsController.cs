@@ -17,11 +17,9 @@ namespace WebLibraryProject2.Controllers.DB
         public ActionResult Index(int? PublicationId)
         {
             {
-                List<BookLocation> bookLocations;
-                if (PublicationId == null)
-                    bookLocations = db.BookLocations.Include(b => b.Publication).Include(b => b.Reader).ToList();
-                else
-                    bookLocations = db.BookLocations.Where(e => e.Publication.Id == PublicationId).Include(b => b.Publication).Include(b => b.Reader).ToList();
+                List<BookLocation> bookLocations = db.BookLocations.ToList();
+                if (PublicationId != null)
+                    bookLocations = bookLocations.Where(e => e.Publication.Id == PublicationId).ToList();
                 return View(bookLocations);
             }
         }
@@ -66,12 +64,14 @@ namespace WebLibraryProject2.Controllers.DB
         // POST: BookLocations/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Room,Place,IsTaken,Publications,Readers")]
-                                   BookLocation bookLocation)
+        public ActionResult Create([Bind(Include = "Id,Room,Place,IsTaken")] BookLocation bookLocation, string[] Publications, string[] Readers)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
+            if (Readers != null)
+                bookLocation.Reader = db.Readers.ToList().First(e => e.ToString() == Readers[0]);
+            bookLocation.Publication = db.Publications.ToList().First(e => Publications[0].Contains(e.ToString()));
             if (ModelState.IsValid)
             {
                 db.BookLocations.Add(bookLocation);
@@ -118,8 +118,10 @@ namespace WebLibraryProject2.Controllers.DB
                 return HttpNotFound();
             if (ModelState.IsValid)
             {
+                bookLocation = db.BookLocations.Find(bookLocation.Id);
                 var Reader = db.Readers.ToList().First(e => e.ToString() == Readers);
                 db.Entry(bookLocation).State = EntityState.Modified;
+
                 if (!db.BookLocations.Find(bookLocation.Id).IsTaken && bookLocation.IsTaken)
                     db.Stats.Add(new Stats {DateTaken = DateTime.Now, Publication = bookLocation.Publication});
                 db.BookLocations.Find(bookLocation.Id).Reader = Reader;

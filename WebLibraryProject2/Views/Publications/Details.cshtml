@@ -8,6 +8,7 @@
     Model.Authors = db.Publications.Find(Model.Id)?.Authors.ToArray();
     var authors = db.Authors.ToList();
     var courses = db.Courses.ToList();
+    var disciplines = db.Disciplines.ToList();
     var bookLocations = db.BookLocations.ToList();
 }
 
@@ -24,11 +25,11 @@
         <dd>
             @Html.DisplayFor(model => model.Name)
         </dd>
-        
+
         <dt>
             <a href="@Url.Action("Authors", new{ PublicationId = Model.Id })">@Html.DisplayNameFor(model => model.Authors)</a>
         </dt>
-        
+
         <dd>
             @foreach (var author in authors)
             {
@@ -40,29 +41,45 @@
                 }
             }
         </dd>
-        
+
         <dt>
-            <a href="@Url.Action("BookLocations", new {PublicationId = Model.Id})">@Html.DisplayNameFor(model => model.BookLocations)</a>
+            @Html.DisplayNameFor(model => model.Disciplines)
         </dt>
-        
+
         <dd>
-            @bookLocations.Count(e => e.Publication.Id == Model.Id)
-        </dd>
-        
-        <dt>
-            <a href="@Url.Action("Courses", new{PublicationId = Model.Id})">@Html.DisplayNameFor(model => model.Courses)</a>
-        </dt>
-        
-        <dd>
-            @foreach (var course in courses)
+            @foreach (var discipline in disciplines)
             {
-                if (course.Publications.Any(e => e.Id == Model.Id))
+                if (discipline.Publications.Any(e => e.Id == Model.Id))
                 {
                     <text>
-                        @course.ToString(),&nbsp;
+                        @discipline.ToString(),&nbsp;
                     </text>
                 }
             }
+        </dd>
+
+        <dt>
+            <a href="@Url.Action("BookLocations", new {PublicationId = Model.Id})">@Html.DisplayNameFor(model => model.BookLocations)</a>
+        </dt>
+
+        <dd>
+            @bookLocations.Count(e => e.Publication.Id == Model.Id)
+        </dd>
+
+        <dt>
+            <a href="@Url.Action("Courses", new{PublicationId = Model.Id})">@Html.DisplayNameFor(model => model.Courses)</a>
+        </dt>
+
+        <dd>
+            @foreach (var course in courses)
+        {
+            if (course.Publications.Any(e => e.Id == Model.Id))
+            {
+                <text>
+                    @course.ToString(),&nbsp;
+                </text>
+        }
+    }
         </dd>
 
         <dt>

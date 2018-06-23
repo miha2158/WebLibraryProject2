@@ -57,12 +57,13 @@ namespace WebLibraryProject2.Controllers.DB
         // POST: Stats/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,DateTaken,Publications")] Stats stats)
+        public ActionResult Create([Bind(Include = "Id,DateTaken")] Stats stats, int Publications)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
             {
+                stats.Publication = db.Publications.Find(Publications);
                 if (ModelState.IsValid)
                 {
                     db.Stats.Add(stats);
@@ -101,7 +102,7 @@ namespace WebLibraryProject2.Controllers.DB
         // POST: Stats/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,DateTaken,Publications")] Stats stats)
+        public ActionResult Edit([Bind(Include = "Id,DateTaken")] Stats stats, string Publications)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();

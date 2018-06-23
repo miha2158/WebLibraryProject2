@@ -6,8 +6,10 @@
     LibraryDatabase db = ViewBag.db;
     var Authors = new SelectList(db.Authors.ToList());
     var Courses = new SelectList(db.Courses.ToList());
+    var Disciplines = new SelectList(db.Disciplines.ToList());
     Model.Authors = db.Authors.Where(e => e.Publications.Any(d => d.Id == Model.Id)).ToArray();
     Model.Courses = db.Courses.Where(e => e.Publications.Any(d => d.Id == Model.Id)).ToArray();
+    Model.Disciplines = db.Disciplines.Where(e => e.Publications.Any(f => f.Id == Model.Id)).ToArray();
 }
 
 <h2>Edit</h2>
@@ -34,8 +36,12 @@
         <div class="form-group">
             @Html.LabelFor(model => model.DatePublished, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.DatePublished, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DatePublished, "", new { @class = "text-danger" })
+                <input name="DatePublished" type="datetime" id="DatePublished" class="form-control" value="@Model.DatePublished" />
+                @*@Html.EditorFor(model => model.DatePublished, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.ValidationMessageFor(model => model.DatePublished, "", new
+    {
+        @class = "text-danger"
+    })
             </div>
         </div>
 
@@ -75,6 +81,13 @@
             @Html.LabelFor(model => model.Courses, new { @class = "control-label col-md-2" })
             <div class="col-md-4">
                 @Html.ListBoxFor(model => model.Courses, Courses, new { @class = "form-control" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Disciplines, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.ListBoxFor(model => model.Disciplines, Disciplines, new { @class = "form-control" })
             </div>
         </div>
 

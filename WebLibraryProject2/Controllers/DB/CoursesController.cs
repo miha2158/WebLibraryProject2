@@ -60,11 +60,12 @@ namespace WebLibraryProject2.Controllers
         // POST: Courses/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Course")] Courses course)
+        public ActionResult Create(byte Course)
         {
             if (!User.IsInRole("Admin"))
                 return HttpNotFound();
 
+            var course = new Courses{ Course = Course };
             {
                 if (ModelState.IsValid)
                 {

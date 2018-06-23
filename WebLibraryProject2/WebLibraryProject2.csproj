@@ -224,6 +224,7 @@
     <Compile Include="Models\DB\Author.cs" />
     <Compile Include="Models\DB\BookLocation.cs" />
     <Compile Include="Models\DB\Courses.cs" />
+    <Compile Include="Models\DB\Discipline.cs" />
     <Compile Include="Models\DB\Enumerators.cs" />
     <Compile Include="Models\Discipline.cs">
       <DependentUpon>LibraryDatabase.tt</DependentUpon>
